@@ -28,8 +28,8 @@ Calculate -> Run Script...
 ```
 Use the file selection dialog to locate the script, then press Open.  
 
-```diff
-**IMPORTANT: if you use the script on Windows, you must use the COOT that comes with CCP4, but NOT WinCOOT!**
+```
+IMPORTANT: if you use the script on Windows, you must use the COOT that comes with CCP4, but NOT WinCOOT!
 ```
 
 ## Missing functionalities
