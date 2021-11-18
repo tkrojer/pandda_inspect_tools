@@ -8,6 +8,16 @@ inspect_pandda_analyse.py is a python plugin for COOT that enables inspection of
 
 Download the repository (e.g. as ZIP file) and unpack it where you want to install it. This can be a local drive or a network drivee.
 
+```
+pandda_inspect_tools/
+├── README.md
+├── inspect_pandda_analyse.py
+└── lib
+    └── coot_utils_XChem.py
+```
+
+## Usage
+
 It can either be started from the command line by typing
 ```
 coot --script inspect_pandda_analyse.py
@@ -18,3 +28,8 @@ Calculate -> Run Script...
 ```
 Use the file selection dialog to locate the script, then press Open.  
 ***Note: inspect_pandda_analyse.py needs to be in the in the same folder as lib/coot_utils_XChem.py***
+
+## Missing functionalities
+- annotation of events
+- updating of pandda_inspect_events.csv 
+
