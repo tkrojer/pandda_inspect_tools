@@ -5,12 +5,9 @@ import pickle
 
 import pygtk, gtk, pango
 import coot
-
-sys.path.append(os.path.join(os.getcwd(), 'lib'))
-import coot_utils_XChem
+import __main__
 
 import csv
-
 
 class GUI(object):
 
@@ -44,9 +41,6 @@ class GUI(object):
         select_pandda_folder_button.connect("clicked", self.select_pandda_folder)
         frame.add(hbox)
         self.vbox.pack_start(frame)
-
-
-
 
         outer_frame = gtk.Frame()
         hbox = gtk.HBox()
@@ -231,8 +225,8 @@ class GUI(object):
 
         self.reset_params()
 
-        if len(molecule_number_list()) > 0:
-            for item in coot_utils_XChem.molecule_number_list():
+        if len(__main__.molecule_number_list()) > 0:
+            for item in __main__.molecule_number_list():
                 coot.close_molecule(item)
 
         self.mol_dict = {
@@ -257,7 +251,8 @@ class GUI(object):
         coot.set_colour_map_rotation_on_read_pdb(0)
         coot.set_last_map_colour(0, 0, 1)
         coot.set_default_initial_contour_level_for_difference_map(3)
-        coot.handle_read_ccp4_map(self.zmap, 1)
+        imol = coot.handle_read_ccp4_map(self.zmap, 1)
+        coot.set_contour_level_in_sigma(imol, 3)
 
         if os.path.isfile(self.ligcif):
             imol = coot.handle_read_draw_molecule_with_recentre(self.ligcif.replace('.cif','.pdb'), 0)
@@ -268,9 +263,8 @@ class GUI(object):
 
     def place_ligand_here(self, widget):
         print('===> moving ligand to pointer')
-        #        coot.move_molecule_here(<molecule_number>)
         print('LIGAND: ', self.mol_dict['ligand'])
-        coot_utils_XChem.move_molecule_here(self.mol_dict['ligand'])
+        __main__.move_molecule_here(self.mol_dict['ligand'])
 
     def merge_ligand_into_protein(self, widget):
         print('===> merge ligand into protein structure')
@@ -292,7 +286,10 @@ class GUI(object):
         if os.path.isfile(os.path.join(self.panddaDir,'processed_datasets', self.xtal,'modelled_structures', '{0!s}-pandda-model.pdb'.format(self.xtal))):
             os.remove(os.path.join(self.panddaDir,'processed_datasets', self.xtal,'modelled_structures', '{0!s}-pandda-model.pdb'.format(self.xtal)))
         os.chdir(os.path.join(self.panddaDir,'processed_datasets', self.xtal,'modelled_structures'))
-        os.symlink(new, '{0!s}-pandda-model.pdb'.format(self.xtal))
+        if os.name == 'nt':
+            os.popen('copy {0!s} {1!s}-pandda-model.pdb'.format(new, self.xtal))
+        else:
+            os.symlink(new, '{0!s}-pandda-model.pdb'.format(self.xtal))
 
     def backward(self, widget):
         self.index -= 1
