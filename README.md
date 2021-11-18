@@ -11,9 +11,7 @@ Download the repository (e.g. as ZIP file) and unpack it where you want to insta
 ```
 pandda_inspect_tools/
 ├── README.md
-├── inspect_pandda_analyse.py
-└── lib
-    └── coot_utils_XChem.py
+└── inspect_pandda_analyse.py
 ```
 
 ## Usage
@@ -28,9 +26,6 @@ Calculate -> Run Script...
 ```
 Use the file selection dialog to locate the script, then press Open.  
 
-```
-IMPORTANT: if you use the script on Windows, you must use the COOT that comes with CCP4, but NOT WinCOOT!
-```
 
 ## Missing functionalities
 - annotation of events
