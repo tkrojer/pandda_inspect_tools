@@ -27,7 +27,10 @@ or from the COOT gui, by selecting
 Calculate -> Run Script...
 ```
 Use the file selection dialog to locate the script, then press Open.  
-***Note: inspect_pandda_analyse.py needs to be in the in the same folder as lib/coot_utils_XChem.py***
+
+```diff
+**IMPORTANT: if you use the script on Windows, you must use the COOT that comes with CCP4, but NOT WinCOOT!**
+```
 
 ## Missing functionalities
 - annotation of events
