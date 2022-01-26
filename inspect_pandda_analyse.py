@@ -144,11 +144,12 @@ class inspect_gui(object):
                                     (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
         response = dlg.run()
         self.panddaDir = dlg.get_filename()
-        self.eventCSV = os.path.join(self.panddaDir,'analyses','pandda_inspect_events.csv')
-        self.siteCSV = os.path.join(self.panddaDir, 'analyses', 'pandda_inspect_events.csv')
+        self.eventCSV = os.path.realpath(os.path.join(self.panddaDir,'analyses','pandda_inspect_events.csv'))
+        self.siteCSV = os.path.realpath(os.path.join(self.panddaDir, 'analyses', 'pandda_inspect_events.csv'))
 
-        if not os.path.isfile(os.path.join(self.panddaDir,'analyses','pandda_inspect_events.csv')):
+        if not os.path.isfile(self.eventCSV):
             analyse_csv = os.path.join(self.panddaDir,'analyses','pandda_analyse_events.csv')
+            analyse_csv = self.eventCSV.replace('pandda_inspect_events.csv', 'pandda_analyse_events.csv')
             if not os.path.isfile(analyse_csv):
                 print('ERROR: something went wrong; cannot find {0!s}'.format(analyse_csv))
                 return
