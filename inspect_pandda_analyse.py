@@ -337,7 +337,7 @@ class inspect_gui(object):
                 l[i].extend(['Interesting','Ligand Placed','Ligand Confidence','Comment','Viewed'])
             else:
                 l[i].extend(['False', 'False', 'Low', 'None', 'False'])
-        with open(os.path.join(self.panddaDir,'analyses','pandda_inspect_events.csv'), 'w', newline='') as f:
+        with open(os.path.join(self.panddaDir,'analyses','pandda_inspect_events.csv'), 'w') as f:
             writer = csv.writer(f)
             writer.writerows(l)
 
@@ -349,7 +349,7 @@ class inspect_gui(object):
                 l[i].extend(['Name','Comment'])
             else:
                 l[i].extend(['None', 'None'])
-        with open(os.path.join(self.panddaDir,'analyses','pandda_inspect_sites.csv'), 'w', newline='') as f:
+        with open(os.path.join(self.panddaDir,'analyses','pandda_inspect_sites.csv'), 'w') as f:
             writer = csv.writer(f)
             writer.writerows(l)
 
