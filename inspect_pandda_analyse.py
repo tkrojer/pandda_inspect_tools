@@ -278,8 +278,9 @@ class inspect_gui(object):
         # event map contour level:
         # if you divide it by (1-bdc) you get the contour level in RMSD.
         # for 1-bdc = 0.3, then contouring at 0.3 is 1 RMSD, 0.6 is 2 RMSD, etc.
+        # note self.bdc is actually 1-bdc
 #        emap_level = 1.0 - float(self.bdc)
-#        coot.set_contour_level_in_sigma(imol, emap_level)
+        coot.set_contour_level_in_sigma(imol, float(self.bdc))
         coot.set_default_initial_contour_level_for_difference_map(3)
         imol = coot.handle_read_ccp4_map(self.zmap, 1)
         coot.set_contour_level_in_sigma(imol, 3)
