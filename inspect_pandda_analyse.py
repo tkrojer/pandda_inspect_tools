@@ -1,7 +1,6 @@
 import os
 import glob
 import sys
-import pickle
 
 import pygtk, gtk, pango
 import coot
@@ -9,7 +8,7 @@ import __main__
 
 import csv
 
-class GUI(object):
+class inspect_gui(object):
 
     def __init__(self):
 
@@ -146,6 +145,32 @@ class GUI(object):
         response = dlg.run()
         self.panddaDir = dlg.get_filename()
         self.eventCSV = os.path.join(self.panddaDir,'analyses','pandda_inspect_events.csv')
+        self.siteCSV = os.path.join(self.panddaDir, 'analyses', 'pandda_inspect_events.csv')
+
+        if not os.path.isfile(os.path.join(self.panddaDir,'analyses','pandda_inspect_events.csv')):
+            analyse_csv = os.path.join(self.panddaDir,'analyses','pandda_analyse_events.csv')
+            if not os.path.isfile(analyse_csv):
+                print('ERROR: something went wrong; cannot find {0!s}'.format(analyse_csv))
+                return
+            else:
+                self.initialize_inspect_events_csv_file(analyse_csv)
+
+        if not os.path.isfile(self.eventCSV):
+            print('ERROR: something went wrong; cannot find {0!s}'.format(self.eventCSV))
+            return
+
+        if not os.path.isfile(os.path.join(self.panddaDir,'analyses','pandda_inspect_sites.csv')):
+            analyse_csv = os.path.join(self.panddaDir,'analyses','pandda_inspect_sites.csv')
+            if not os.path.isfile(analyse_csv):
+                print('ERROR: something went wrong; cannot find {0!s}'.format(analyse_csv))
+                return
+            else:
+                self.initialize_inspect_sites_csv_file(analyse_csv)
+
+        if not os.path.isfile(self.siteCSV):
+            print('ERROR: something went wrong; cannot find {0!s}'.format(self.siteCSV))
+            return
+
         dlg.destroy()
         self.parsepanddaDir()
 
@@ -247,9 +272,14 @@ class GUI(object):
         coot.set_nomenclature_errors_on_read("ignore")
         imol = coot.handle_read_draw_molecule_with_recentre(self.pdb, 0)
         self.mol_dict['protein'] = imol
-        coot.handle_read_ccp4_map(self.emap, 0)
+        imol = coot.handle_read_ccp4_map(self.emap, 0)
         coot.set_colour_map_rotation_on_read_pdb(0)
         coot.set_last_map_colour(0, 0, 1)
+        # event map contour level:
+        # if you divide it by (1-bdc) you get the contour level in RMSD.
+        # for 1-bdc = 0.3, then contouring at 0.3 is 1 RMSD, 0.6 is 2 RMSD, etc.
+        emap_level = 1 - self.bdc
+        coot.set_contour_level_in_sigma(imol, emap_level)
         coot.set_default_initial_contour_level_for_difference_map(3)
         imol = coot.handle_read_ccp4_map(self.zmap, 1)
         coot.set_contour_level_in_sigma(imol, 3)
@@ -299,12 +329,39 @@ class GUI(object):
         self.index += 1
         self.RefreshData()
 
+    def initialize_inspect_events_csv_file(self, analyse_csv):
+        r = csv.reader(open(analyse_csv))
+        l = list(r)
+        for i, line in enumerate(l):
+            if i == 0:
+                l[i].extend(['Interesting','Ligand Placed','Ligand Confidence','Comment','Viewed'])
+            else:
+                l[i].extend(['False', 'False', 'Low', 'None', 'False'])
+        with open(os.path.join(self.panddaDir,'analyses','pandda_inspect_events.csv'), 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerows(l)
+
+    def initialize_inspect_sites_csv_file(self, analyse_csv):
+        r = csv.reader(open(analyse_csv))
+        l = list(r)
+        for i, line in enumerate(l):
+            if i == 0:
+                l[i].extend(['Name','Comment'])
+            else:
+                l[i].extend(['None', 'None'])
+        with open(os.path.join(self.panddaDir,'analyses','pandda_inspect_sites.csv'), 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerows(l)
+
     def parsepanddaDir(self):
         r = csv.reader(open(self.eventCSV))
         self.elist = list(r)
+
+        r = csv.reader(open(self.siteCSV))
+        self.slist = list(r)
 
     def CANCEL(self, widget):
         self.window.destroy()
 
 if __name__ == '__main__':
-    GUI().StartGUI()
+    inspect_gui().StartGUI()
