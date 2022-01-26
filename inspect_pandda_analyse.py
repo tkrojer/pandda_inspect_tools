@@ -148,7 +148,6 @@ class inspect_gui(object):
         self.siteCSV = os.path.realpath(os.path.join(self.panddaDir, 'analyses', 'pandda_inspect_events.csv'))
 
         if not os.path.isfile(self.eventCSV):
-            analyse_csv = os.path.join(self.panddaDir,'analyses','pandda_analyse_events.csv')
             analyse_csv = self.eventCSV.replace('pandda_inspect_events.csv', 'pandda_analyse_events.csv')
             if not os.path.isfile(analyse_csv):
                 print('ERROR: something went wrong; cannot find {0!s}'.format(analyse_csv))
@@ -160,8 +159,8 @@ class inspect_gui(object):
             print('ERROR: something went wrong; cannot find {0!s}'.format(self.eventCSV))
             return
 
-        if not os.path.isfile(os.path.join(self.panddaDir,'analyses','pandda_inspect_sites.csv')):
-            analyse_csv = os.path.join(self.panddaDir,'analyses','pandda_inspect_sites.csv')
+        if not os.path.isfile(self.siteCSV):
+            analyse_csv = self.siteCSV.replace('pandda_inspect_sites.csv', 'pandda_analyse_sites.csv')
             if not os.path.isfile(analyse_csv):
                 print('ERROR: something went wrong; cannot find {0!s}'.format(analyse_csv))
                 return
