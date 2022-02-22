@@ -43,7 +43,7 @@ def main(argv):
     overwrite = False
 
     try:
-        opts, args = getopt.getopt(argv,"haop:",["panddadir=", "axis=", "overwrite"])
+        opts, args = getopt.getopt(argv,"p:hao",["panddadir=", "axis=", "overwrite"])
     except getopt.GetoptError:
         print('ccp4-python convert_event_map_to_mtz.py -p <pandda_dir> -a <axis>')
         sys.exit(2)
