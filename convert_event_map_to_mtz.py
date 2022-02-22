@@ -35,7 +35,7 @@ def main(argv):
         elif opt in ("-p", "--panddadir"):
             panddaDir = arg
         elif opt in ("-a", "--axis"):
-            panddaDir = arg
+            axisOrder = arg
 
     if os.path.isdir(panddaDir):
         convert_event_maps_to_mtz(panddaDir, axisOrder)
