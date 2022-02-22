@@ -24,7 +24,6 @@ import os
 import glob
 import sys
 
-#import pygtk, gtk, pango
 import gtk
 import coot
 import __main__
@@ -208,17 +207,24 @@ class inspect_gui(object):
 
     def get_emap(self):
         emap = ''
+#        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
+#                                       '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.ccp4'.format(self.xtal, self.event, self.bdc))):
+#            emap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
+#                                       '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.ccp4'.format(self.xtal, self.event, self.bdc))
         if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
-                                       '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.ccp4'.format(self.xtal, self.event, self.bdc))):
+                                       '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))):
             emap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
-                                       '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.ccp4'.format(self.xtal, self.event, self.bdc))
+                                       '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))
         return emap
 
     def get_zmap(self):
         zmap = ''
+#        if os.path.isfile(
+#                os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.ccp4'.format(self.xtal))):
+#            zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.ccp4'.format(self.xtal))
         if os.path.isfile(
-                os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.ccp4'.format(self.xtal))):
-            zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.ccp4'.format(self.xtal))
+                os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal))):
+            zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal))
         return zmap
 
     def get_ligcif(self):
@@ -280,6 +286,7 @@ class inspect_gui(object):
         self.mol_dict = {
             'pdb': None,
             'emap': None,
+            'zmap': None,
             'ligand': None
             }
 
@@ -295,7 +302,9 @@ class inspect_gui(object):
         coot.set_nomenclature_errors_on_read("ignore")
         imol = coot.handle_read_draw_molecule_with_recentre(self.pdb, 0)
         self.mol_dict['protein'] = imol
-        imol = coot.handle_read_ccp4_map(self.emap, 0)
+#        imol = coot.handle_read_ccp4_map(self.emap, 0)
+        imol = coot.auto_read_make_and_draw_maps(self.emap)
+        self.mol_dict['emap'] = imol
         coot.set_colour_map_rotation_on_read_pdb(0)
         coot.set_last_map_colour(0, 0, 1)
         # event map contour level:
@@ -305,7 +314,9 @@ class inspect_gui(object):
 #        emap_level = 1.0 - float(self.bdc)
         coot.set_contour_level_in_sigma(imol, float(self.bdc))
         coot.set_default_initial_contour_level_for_difference_map(3)
-        imol = coot.handle_read_ccp4_map(self.zmap, 1)
+#        imol = coot.handle_read_ccp4_map(self.zmap, 1)
+        imol = coot.auto_read_make_and_draw_maps(self.zmap)
+        self.mol_dict['zmap'] = imol
         coot.set_contour_level_in_sigma(imol, 3)
 
         if os.path.isfile(self.ligcif):
