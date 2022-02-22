@@ -15,12 +15,13 @@ def change_axis_order(map_name, tmp_map_name, axisOrder):
     c = axisOrder[2].upper()
 
     cmd = (
-        'mapmask mapin {0!s} mapout {1!s} << eof\n'.format(map_name, tmp_map_name) +
+        'mapmask mapin {0!s} mapout {1!s} << eof > /dev/null\n'.format(map_name, tmp_map_name) +
         ' axis {0!s} {1!s} {2!s}\n'.format(a, b, c) +
         ' end\n'
         'eof'
     )
 
+    print('running mapmask to change axis order for {0!s} to {1!s}'.format(map_name, axisOrder))
     os.system(cmd)
 
     return tmp_map_name
@@ -32,6 +33,7 @@ def get_resolution(pandda_input_mtz):
     return highres
 
 def run_gemmi_aap2sf(map_name, mtz_name,  dmin):
+    print('runnning gemmi map2sf...')
     cmd = 'gemmi map2sf %s %s FWT PHWT --dmin=%s' % (map_name, mtz_name, dmin)
     os.system(cmd)
 
@@ -41,9 +43,13 @@ def remove_temp_map(tmp_map_name):
 
 def convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite):
     print('looking for event maps in {0!s}'.format(panddaDir))
+    sampleList = []
     for maps in sorted(glob.glob(os.path.join(panddaDir, 'processed_datasets', '*', '*.ccp4'))):
         tmp_map_name = None
         sample_id = maps.split('/')[len(maps.split('/'))-2]
+        if sample_id not in sampleList:
+            print('converting maps for {0!s}'.format(sample_id))
+            sampleList.append(sample_id)
         workDir = maps[:maps.rfind('/')]
         os.chdir(workDir)
         pandda_input_mtz = '{0!s}-pandda-input.mtz'.format(sample_id)
@@ -53,6 +59,7 @@ def convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite):
             print('ERROR: {0!s} does not exist; cannot get resolution of map later; skipping...'.format(pandda_input_mtz))
             sys.exit(2)
         map_name = maps.split('/')[len(maps.split('/'))-1]
+        print('current map {0!s}'.format(map_name))
         mtz_name = map_name.replace('.ccp4', '.mtz')
         if os.path.isfile(mtz_name) and not overwrite:
             print('WARNING: {0!s} exists; skipping...'.format(mtz_name))
