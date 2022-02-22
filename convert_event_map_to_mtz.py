@@ -48,7 +48,7 @@ def convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite):
         sample_id = maps.split('/')[len(maps.split('/'))-2]
         workDir = maps[:maps.rfind('/')]
         os.chdir(workDir)
-        pandda_input_mtz = '{0!s}}-pandda-input.mtz'.format(sample_id)
+        pandda_input_mtz = '{0!s}-pandda-input.mtz'.format(sample_id)
         if os.path.isdir(pandda_input_mtz):
             dmin = get_resolution(pandda_input_mtz)
         else:
