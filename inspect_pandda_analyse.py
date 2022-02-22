@@ -222,6 +222,7 @@ class inspect_gui(object):
 #        if os.path.isfile(
 #                os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.ccp4'.format(self.xtal))):
 #            zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.ccp4'.format(self.xtal))
+        print('zmap:', os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal)))
         if os.path.isfile(
                 os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal))):
             zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal))
@@ -312,6 +313,7 @@ class inspect_gui(object):
         # for 1-bdc = 0.3, then contouring at 0.3 is 1 RMSD, 0.6 is 2 RMSD, etc.
         # note self.bdc is actually 1-bdc
 #        emap_level = 1.0 - float(self.bdc)
+        print(self.mol_dict)
         coot.set_contour_level_in_sigma(imol, float(self.bdc))
         coot.set_default_initial_contour_level_for_difference_map(3)
 #        imol = coot.handle_read_ccp4_map(self.zmap, 1)
