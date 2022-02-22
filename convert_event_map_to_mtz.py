@@ -50,18 +50,21 @@ def main(argv):
         sys.exit(2)
 
     for opt, arg in opts:
+        print(opt, arg)
         if opt == '-h':
             print('ccp4-python convert_event_map_to_mtz.py -p <pandda_dir>')
             sys.exit()
         elif opt in ("-p", "--panddadir"):
             panddaDir = arg
         elif opt in ("-a", "--axis"):
-            panddaDir = arg
+            axisOrder = arg
         elif opt in ("-o", "--overwrite"):
             overwrite = True
     print(panddaDir)
     if os.path.isdir(panddaDir):
         convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite)
+    else:
+        print('ERROR: pandda directory does not exist -> {0!s}'.format(panddaDir))
 
 if __name__ == '__main__':
     main(sys.argv[1:])
