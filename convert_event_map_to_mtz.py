@@ -15,7 +15,7 @@ def change_axis_order(map_name, axisOrder):
     c = upper(axisOrder[2])
 
     cmd = (
-        'mapmask mapin {0!s} mapout tmp.map << eof\n'.format(map_name) +
+        'mapmask mapin {0!s} mapout {1!s} << eof\n'.format(map_name, map_name.replace('.ccp4', '_tmp.ccp4')) +
         ' axis {0!s} {1!s} {2!s}\n'.format(a, b, c)
         ' end\n'
         'eof'
