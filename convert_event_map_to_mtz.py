@@ -59,7 +59,7 @@ def main(argv):
             panddaDir = arg
         elif opt in ("-o", "--overwrite"):
             overwrite = True
-
+    print(panddaDir)
     if os.path.isdir(panddaDir):
         convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite)
 
