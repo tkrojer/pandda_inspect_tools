@@ -304,7 +304,7 @@ class inspect_gui(object):
         imol = coot.handle_read_draw_molecule_with_recentre(self.pdb, 0)
         self.mol_dict['protein'] = imol
 #        imol = coot.handle_read_ccp4_map(self.emap, 0)
-        imol = coot.auto_read_make_and_draw_maps(self.emap)
+        imol = coot.auto_read_make_and_draw_maps(self.emap, 0)
         self.mol_dict['emap'] = imol
         coot.set_colour_map_rotation_on_read_pdb(0)
         coot.set_last_map_colour(0, 0, 1)
@@ -314,6 +314,8 @@ class inspect_gui(object):
         # note self.bdc is actually 1-bdc
 #        emap_level = 1.0 - float(self.bdc)
         print(self.mol_dict)
+        print(type(imol))
+        print(len(imol))
         coot.set_contour_level_in_sigma(imol, float(self.bdc))
         coot.set_default_initial_contour_level_for_difference_map(3)
 #        imol = coot.handle_read_ccp4_map(self.zmap, 1)
