@@ -14,13 +14,27 @@ def change_axis_order(map_name, axisOrder):
     b = axisOrder[1].upper()
     c = axisOrder[2].upper()
 
+    map_out = map_name.replace('.ccp4', '_tmp.ccp4')
+
     cmd = (
-        'mapmask mapin {0!s} mapout {1!s} << eof\n'.format(map_name, map_name.replace('.ccp4', '_tmp.ccp4')) +
+        'mapmask mapin {0!s} mapout {1!s} << eof\n'.format(map_name, map_out) +
         ' axis {0!s} {1!s} {2!s}\n'.format(a, b, c) +
         ' end\n'
         'eof'
     )
 
+    print(cmd)
+
+    return map_out
+
+
+def get_resolution(pandda_input_mtz):
+    m = gemmi.read_mtz_file(pandda_input_mtz)
+    highres = m.resolution_high()
+    return highres
+
+def run_gemmi_aap2sf(map_name, mtz_name,  dmin):
+    cmd = 'gemmi map2sf %s %s FWT PHWT --dmin=%s' % (map_name, mtz_name, dmin)
     print(cmd)
 
 def convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite):
@@ -30,12 +44,22 @@ def convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite):
 
     print('looking for event maps in {0!s}'.format(panddaDir))
     for maps in sorted(glob.glob(os.path.join(panddaDir, 'processed_datasets', '*', '*.ccp4'))):
+        dmin = None
         sample_id = maps.split('/')[len(maps.split('/'))-2]
-        os.chdir(maps[:maps.rfind('/')])
+        workDir = maps[:maps.rfind('/')]
+        os.chdir(workDir)
+        pandda_input_mtz = '{0!s}}-pandda-input.mtz'.format(sample_id)
+        if os.path.isdir(pandda_input_mtz):
+            dmin = get_resolution(pandda_input_mtz)
+        else:
+            print('ERROR: {0!s} does not exist; cannot get resolution of map later; skipping...'.format(pandda_input_mtz))
+            sys.exit(2)
         map_name = maps.split('/')[len(maps.split('/'))-1]
+        mtz_name = map_name.replace('.ccp4', '.mtz')
         print(map_name)
         if axisOrder:
-            change_axis_order(map_name, axisOrder)
+            map_name = change_axis_order(map_name, axisOrder)
+        run_gemmi_aap2sf(map_name, mtz_name, dmin)
 
 def main(argv):
     panddaDir = None
@@ -50,7 +74,6 @@ def main(argv):
         sys.exit(2)
 
     for opt, arg in opts:
-        print(opt, arg)
         if opt == '-h':
             print('ccp4-python convert_event_map_to_mtz.py -p <pandda_dir>')
             sys.exit()
@@ -60,7 +83,7 @@ def main(argv):
             axisOrder = arg
         elif opt in ("-o", "--overwrite"):
             overwrite = True
-    print(panddaDir)
+
     if os.path.isdir(panddaDir):
         convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite)
     else:
