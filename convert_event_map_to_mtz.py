@@ -55,6 +55,8 @@ def main(argv):
         elif opt in ("-p", "--panddadir"):
             panddaDir = arg
         elif opt in ("-a", "--axis"):
+            panddaDir = arg
+        elif opt in ("-o", "--overwrite"):
             overwrite = True
 
     if os.path.isdir(panddaDir):
