@@ -318,10 +318,7 @@ class inspect_gui(object):
 #        imol = coot.handle_read_ccp4_map(self.zmap, 1)
         imol = coot.auto_read_make_and_draw_maps(self.zmap)
         self.mol_dict['zmap'] = imol
-        print(self.mol_dict)
-        print(type(imol))
-        print(len(imol))
-        coot.set_contour_level_in_sigma(imol, 3)
+        coot.set_contour_level_in_sigma(imol[0], 3)
 
         if os.path.isfile(self.ligcif):
             imol = coot.handle_read_draw_molecule_with_recentre(self.ligcif.replace('.cif','.pdb'), 0)
