@@ -9,11 +9,9 @@ def convert_event_maps_to_mtz(panddaDir):
     print('looking for event maps in {0!s}'.format(panddaDir))
     for maps in sorted(glob.glob(os.path.join(panddaDir, 'processed_datasets', '*', '*.ccp4'))):
         sample_id = maps.split('/')[len(maps.split('/'))-2]
-        print(sample_id, maps[:maps.rfind('/')])
         os.chdir(maps[:maps.rfind('/')])
-        print(os.getcwd())
-        
-
+        map_name = maps.split('/')[len(maps.split('/'))-1]
+        print(map_name)
 
 def main(argv):
     panddaDir = None
