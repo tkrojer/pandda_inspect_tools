@@ -54,7 +54,10 @@ def get_resolution(pandda_input_mtz):
 
 def run_gemmi_aap2sf(map_name, mtz_name,  dmin):
     print('runnning gemmi map2sf...')
-    cmd = 'gemmi map2sf %s %s FWT PHWT --dmin=%s' % (map_name, mtz_name, dmin)
+    if 'z_map' in map_name:
+        cmd = 'gemmi map2sf %s %s DELFWT PHDELWT --dmin=%s' % (map_name, mtz_name, dmin)
+    else:
+        cmd = 'gemmi map2sf %s %s FWT PHWT --dmin=%s' % (map_name, mtz_name, dmin)
     os.system(cmd)
 
 def remove_temp_map(tmp_map_name):
