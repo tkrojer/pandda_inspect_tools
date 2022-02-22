@@ -10,9 +10,9 @@ def change_axis_order(map_name, axisOrder):
         print('ERROR: axis order needs to contain three characters of type X, Y and Z')
         sys.exit(2)
 
-    a = upper(axisOrder[0])
-    b = upper(axisOrder[1])
-    c = upper(axisOrder[2])
+    a = axisOrder[0].upper()
+    b = axisOrder[1].upper()
+    c = axisOrder[2].upper()
 
     cmd = (
         'mapmask mapin {0!s} mapout {1!s} << eof\n'.format(map_name, map_name.replace('.ccp4', '_tmp.ccp4')) +
