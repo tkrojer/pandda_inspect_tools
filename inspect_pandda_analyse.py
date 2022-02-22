@@ -222,7 +222,6 @@ class inspect_gui(object):
 #        if os.path.isfile(
 #                os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.ccp4'.format(self.xtal))):
 #            zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.ccp4'.format(self.xtal))
-        print('zmap:', os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal)))
         if os.path.isfile(
                 os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal))):
             zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal))
@@ -304,6 +303,10 @@ class inspect_gui(object):
         imol = coot.handle_read_draw_molecule_with_recentre(self.pdb, 0)
         self.mol_dict['protein'] = imol
 #        imol = coot.handle_read_ccp4_map(self.emap, 0)
+
+        coot.set_show_symmetry_master(1)  # master switch to show symmetry molecules
+        coot.set_show_symmetry_molecule(imol, 1)  # show symm for model
+
         imol = coot.auto_read_make_and_draw_maps(self.emap)
         self.mol_dict['emap'] = imol
         coot.set_colour_map_rotation_on_read_pdb(0)
@@ -313,7 +316,7 @@ class inspect_gui(object):
         # for 1-bdc = 0.3, then contouring at 0.3 is 1 RMSD, 0.6 is 2 RMSD, etc.
         # note self.bdc is actually 1-bdc
 #        emap_level = 1.0 - float(self.bdc)
-        coot.set_contour_level_in_sigma(imol[0], float(self.bdc))
+#        coot.set_contour_level_in_sigma(imol[0], float(self.bdc))
         coot.set_default_initial_contour_level_for_difference_map(3)
 #        imol = coot.handle_read_ccp4_map(self.zmap, 1)
         imol = coot.auto_read_make_and_draw_maps(self.zmap)
