@@ -452,7 +452,7 @@ class inspect_gui(object):
                 self.show_averagemap = 1
             else:
                 self.show_averagemap = 0
-            coot.toggle_display_map(self.mol_dict['averagemap'][0], self.show_averagemap)
+            __main__.toggle_display_map(self.mol_dict['averagemap'][0], self.show_averagemap)
 
 
     def CANCEL(self, widget):
