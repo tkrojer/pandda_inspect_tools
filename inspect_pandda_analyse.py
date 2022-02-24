@@ -217,7 +217,7 @@ class inspect_gui(object):
         foundItem = False
         for item in self.ligand_confidence_button_labels:
             if item[1] == self.ligand_confidence:
-                self.ligand_confidence_button_list[item[0]].set_active()
+                self.ligand_confidence_button_list[item[0]].set_active(True)
                 foundItem = True
                 break
         if not foundItem:
