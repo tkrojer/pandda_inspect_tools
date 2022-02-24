@@ -303,6 +303,9 @@ class inspect_gui(object):
             'averagemap': None
             }
 
+        self.show_xraymap = 0
+        self.show_averagemap = 0
+
         if self.index < 1:
             self.index = 1
         if self.index > len(self.elist) - 1:
@@ -426,6 +429,9 @@ class inspect_gui(object):
             coot.set_colour_map_rotation_on_read_pdb(0)
         else:
             print('WARNING: (2)fofc maps are already loaded')
+            print(self.mol_dict['xraymap'])
+            print(self.mol_dict['xraymap'][0])
+            print(self.mol_dict['xraymap'][1])
 
     def get_averagemap(self):
         averagemap = ''
@@ -439,11 +445,15 @@ class inspect_gui(object):
             imol = coot.auto_read_make_and_draw_maps(averagemap)
             self.mol_dict['averagemap'] = imol
             coot.set_colour_map_rotation_on_read_pdb(0)
+            self.show_averagemap = 1
         else:
-#            coot.toggle_display_map(imol, 0)
-
             print('WARNING: average map is already loaded')
-            print(self.mol_dict['averagemap'])
+            if self.show_averagemap == 0:
+                self.show_averagemap = 1
+            else:
+                self.show_averagemap = 0
+            coot.toggle_display_map(self.mol_dict['averagemap'][0], self.show_averagemap)
+
 
     def CANCEL(self, widget):
         self.window.destroy()
