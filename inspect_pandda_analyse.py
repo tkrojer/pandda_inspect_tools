@@ -139,6 +139,17 @@ class inspect_gui(object):
         frame.add(hbox)
         self.vbox.add(frame)
 
+        frame = gtk.Frame(label='Maps')
+        hbox = gtk.HBox()
+        load_x_ray_maps_button = gtk.Button(label="Load (2)fofc maps")
+        load_average_map_button = gtk.Button(label="Load average map")
+        hbox.add(load_x_ray_maps_button)
+        load_x_ray_maps_button.connect("clicked", self.load_x_ray_maps)
+        hbox.add(load_average_map_button)
+        load_average_map_button.connect("clicked", self.load_average_map)
+        frame.add(hbox)
+        self.vbox.pack_start(frame)
+
         frame = gtk.Frame(label='Ligand Modeling')
         hbox = gtk.HBox()
         merge_ligand_button = gtk.Button(label="Merge Ligand")
@@ -287,7 +298,9 @@ class inspect_gui(object):
             'pdb': None,
             'emap': None,
             'zmap': None,
-            'ligand': None
+            'ligand': None,
+            'xraymap': None,
+            'averagemap': None
             }
 
         if self.index < 1:
@@ -398,6 +411,36 @@ class inspect_gui(object):
 
         r = csv.reader(open(self.siteCSV))
         self.slist = list(r)
+
+    def get_xraymap(self):
+        xraymap = ''
+        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-pandda-input.mtz'.format(self.xtal))):
+            xraymap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-pandda-input.mtz'.format(self.xtal))
+        return xraymap
+
+    def load_x_ray_maps(self):
+        if self.mol_dict['xraymap'] is None:
+            xraymap = self.get_xraymap()
+            imol = coot.auto_read_make_and_draw_maps(xraymap)
+            self.mol_dict['xraymap'] = imol
+            coot.set_colour_map_rotation_on_read_pdb(0)
+        else:
+            print('WARNING: (2)fofc maps are already loaded')
+
+    def get_averagemap(self):
+        averagemap = ''
+        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))):
+            averagemap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))
+        return averagemap
+
+    def load_average_map(self):
+        if self.mol_dict['averagemap'] is None:
+            averagemap = self.get_averagemap()
+            imol = coot.auto_read_make_and_draw_maps(averagemap)
+            self.mol_dict['averagemap'] = imol
+            coot.set_colour_map_rotation_on_read_pdb(0)
+        else:
+            print('WARNING: average map is already loaded')
 
     def CANCEL(self, widget):
         self.window.destroy()
