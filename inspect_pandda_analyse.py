@@ -303,8 +303,11 @@ class inspect_gui(object):
             coot.read_cif_dictionary(os.path.join(self.ligcif))
             imol = coot.handle_read_draw_molecule_with_recentre(self.ligcif.replace('.cif','.pdb'), 0)
             self.mol_dict['ligand'] = imol
-            __main__.move_molecule_here(self.mol_dict['ligand'])
 
+    def recentre_on_event(self):
+        if self.mol_dict['ligand']:
+            __main__.move_molecule_here(self.mol_dict['ligand'])
+        coot.set_rotation_centre(self.x, self.y, self.z)
 
     def reset_params(self):
         self.xtal = None
@@ -388,8 +391,8 @@ class inspect_gui(object):
         self.load_zmap()
         self.load_xraymap()
         self.load_averagemap()
+        self.recentre_on_event()
 
-        coot.set_rotation_centre(self.x, self.y, self.z)
 
     def place_ligand_here(self, widget):
         print('===> moving ligand to pointer')
