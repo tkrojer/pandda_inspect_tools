@@ -48,8 +48,9 @@ class inspect_gui(object):
 
         self.ligand_confidence_button_labels = [
             [0, 'unassigned'],
-            [1, 'low confidence'],
-            [2, 'high confidence']
+            [1, 'no ligand bound'],
+            [2, 'low confidence'],
+            [3, 'high confidence']
         ]
 
 
