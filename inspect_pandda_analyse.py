@@ -222,6 +222,13 @@ class inspect_gui(object):
                              '{0!s}-pandda-model.pdb'.format(self.xtal))
         return pdb
 
+    def load_pdb(self):
+        coot.set_nomenclature_errors_on_read("ignore")
+        imol = coot.handle_read_draw_molecule_with_recentre(self.pdb, 0)
+        self.mol_dict['protein'] = imol
+        coot.set_show_symmetry_master(1)  # master switch to show symmetry molecules
+        coot.set_show_symmetry_molecule(imol, 1)  # show symm for model
+
     def get_emap(self):
         emap = ''
         if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
@@ -230,6 +237,19 @@ class inspect_gui(object):
                                        '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))
         return emap
 
+    def load_emap(self):
+        imol = coot.auto_read_make_and_draw_maps(self.emap)
+        self.mol_dict['emap'] = imol
+        coot.set_colour_map_rotation_on_read_pdb(0)
+        coot.set_last_map_colour(0, 0, 1)
+        self.show_emap = 1
+        # event map contour level:
+        # if you divide it by (1-bdc) you get the contour level in RMSD.
+        # for 1-bdc = 0.3, then contouring at 0.3 is 1 RMSD, 0.6 is 2 RMSD, etc.
+        # note self.bdc is actually 1-bdc
+        # emap_level = 1.0 - float(self.bdc)
+        # coot.set_contour_level_in_sigma(imol[0], float(self.bdc))
+
     def get_zmap(self):
         zmap = ''
         if os.path.isfile(
@@ -237,11 +257,26 @@ class inspect_gui(object):
             zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal))
         return zmap
 
+    def load_zmap(self):
+        coot.set_default_initial_contour_level_for_difference_map(3)
+        imol = coot.auto_read_make_and_draw_maps(self.zmap)
+        self.mol_dict['zmap'] = imol
+        coot.set_contour_level_in_sigma(imol[0], 3)
+        self.show_zmap = 1
+
     def get_xraymap(self):
         xraymap = ''
         if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-pandda-input.mtz'.format(self.xtal))):
             xraymap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-pandda-input.mtz'.format(self.xtal))
         return xraymap
+
+    def load_xraymap(self):
+        imol = coot.auto_read_make_and_draw_maps(self.xraymap)
+        self.mol_dict['xraymap'] = imol
+        coot.set_colour_map_rotation_on_read_pdb(0)
+        __main__.toggle_display_map(self.mol_dict['xraymap'][0], self.show_xraymap)
+        __main__.toggle_display_map(self.mol_dict['xraymap'][1], self.show_xraymap)
+        coot.set_last_map_colour(0, 0, 1)
 
     def get_averagemap(self):
         averagemap = ''
@@ -249,12 +284,25 @@ class inspect_gui(object):
             averagemap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))
         return averagemap
 
+    def load_averagemap(self):
+        imol = coot.auto_read_make_and_draw_maps(self.averagemap)
+        self.mol_dict['averagemap'] = imol
+        coot.set_colour_map_rotation_on_read_pdb(0)
+        __main__.toggle_display_map(self.mol_dict['averagemap'][0], self.show_averagemap)
+        coot.set_last_map_colour(0, 0, 1)
+
     def get_ligcif(self):
         ligcif = ''
         for l in glob.glob(os.path.join(self.panddaDir, 'processed_datasets', self.xtal, 'ligand_files', '*cif')):
             ligcif = l
             break
         return ligcif
+
+    def load_ligcif(self):
+        if os.path.isfile(self.ligcif):
+            imol = coot.handle_read_draw_molecule_with_recentre(self.ligcif.replace('.cif','.pdb'), 0)
+            self.mol_dict['ligand'] = imol
+            coot.read_cif_dictionary(os.path.join(self.ligcif))
 
     def reset_params(self):
         self.xtal = None
@@ -332,47 +380,12 @@ class inspect_gui(object):
 
         self.update_labels()
 
-        coot.set_nomenclature_errors_on_read("ignore")
-        imol = coot.handle_read_draw_molecule_with_recentre(self.pdb, 0)
-        self.mol_dict['protein'] = imol
-#        imol = coot.handle_read_ccp4_map(self.emap, 0)
-
-        coot.set_show_symmetry_master(1)  # master switch to show symmetry molecules
-        coot.set_show_symmetry_molecule(imol, 1)  # show symm for model
-
-        imol = coot.auto_read_make_and_draw_maps(self.emap)
-        self.mol_dict['emap'] = imol
-        coot.set_colour_map_rotation_on_read_pdb(0)
-        coot.set_last_map_colour(0, 0, 1)
-        self.show_emap = 1
-        # event map contour level:
-        # if you divide it by (1-bdc) you get the contour level in RMSD.
-        # for 1-bdc = 0.3, then contouring at 0.3 is 1 RMSD, 0.6 is 2 RMSD, etc.
-        # note self.bdc is actually 1-bdc
-#        emap_level = 1.0 - float(self.bdc)
-#        coot.set_contour_level_in_sigma(imol[0], float(self.bdc))
-        coot.set_default_initial_contour_level_for_difference_map(3)
-        imol = coot.auto_read_make_and_draw_maps(self.zmap)
-        self.mol_dict['zmap'] = imol
-        coot.set_contour_level_in_sigma(imol[0], 3)
-        self.show_zmap = 1
-
-        imol = coot.auto_read_make_and_draw_maps(self.xraymap)
-        self.mol_dict['xraymap'] = imol
-        coot.set_colour_map_rotation_on_read_pdb(0)
-        self.show_xraymap = 1
-        coot.set_last_map_colour(0, 0, 1)
-
-        imol = coot.auto_read_make_and_draw_maps(self.averagemap)
-        self.mol_dict['averagemap'] = imol
-        coot.set_colour_map_rotation_on_read_pdb(0)
-        self.show_averagemap = 1
-        coot.set_last_map_colour(0, 0, 1)
-
-        if os.path.isfile(self.ligcif):
-            imol = coot.handle_read_draw_molecule_with_recentre(self.ligcif.replace('.cif','.pdb'), 0)
-            self.mol_dict['ligand'] = imol
-            coot.read_cif_dictionary(os.path.join(self.ligcif))
+        self.load_pdb()
+        self.load_emap()
+        self.load_zmap()
+        self.load_xraymap()
+        self.load_averagemap()
+        self.load_ligcif()
 
         coot.set_rotation_centre(self.x, self.y, self.z)
 
