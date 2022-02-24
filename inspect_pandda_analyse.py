@@ -211,6 +211,11 @@ class inspect_gui(object):
 #        print(self.elist[self.index][0])
         print(self.elist[0])
         print(self.elist[1])
+        for n, item in enumerate(self.elist[0]):
+            if item == 'Ligand Confidence':
+                self.elist[self.index][n] = data
+        print(self.elist[self.index][n])
+
 
     def select_pandda_folder(self, widget):
         dlg = gtk.FileChooserDialog("Open..", None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
