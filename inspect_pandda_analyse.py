@@ -221,7 +221,8 @@ class inspect_gui(object):
                 foundItem = True
                 break
         if not foundItem:
-            self.ligand_confidence_button_list[0].set_active()
+            print(self.ligand_confidence_button_list)
+            self.ligand_confidence_button_list[0].set_active(True)
 
 
     def select_pandda_folder(self, widget):
