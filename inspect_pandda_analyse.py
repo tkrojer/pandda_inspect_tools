@@ -418,7 +418,7 @@ class inspect_gui(object):
             xraymap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-pandda-input.mtz'.format(self.xtal))
         return xraymap
 
-    def load_x_ray_maps(self):
+    def load_x_ray_maps(self, widget):
         if self.mol_dict['xraymap'] is None:
             xraymap = self.get_xraymap()
             imol = coot.auto_read_make_and_draw_maps(xraymap)
@@ -433,7 +433,7 @@ class inspect_gui(object):
             averagemap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))
         return averagemap
 
-    def load_average_map(self):
+    def load_average_map(self, widget):
         if self.mol_dict['averagemap'] is None:
             averagemap = self.get_averagemap()
             imol = coot.auto_read_make_and_draw_maps(averagemap)
