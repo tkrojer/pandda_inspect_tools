@@ -349,14 +349,12 @@ class inspect_gui(object):
     def load_ligcif(self):
         if os.path.isfile(self.ligcif):
             coot.read_cif_dictionary(os.path.join(self.ligcif))
-#            imol = coot.handle_read_draw_molecule_with_recentre(self.ligcif.replace('.cif','.pdb'), 0)
-            imol = coot.handle_read_draw_molecule_with_recentre(self.ligcif.replace('.cif', '.pdb'), 1)
+            imol = coot.handle_read_draw_molecule_with_recentre(self.ligcif.replace('.cif','.pdb'), 0)
+#            imol = coot.handle_read_draw_molecule_with_recentre(self.ligcif.replace('.cif', '.pdb'), 1)
             self.mol_dict['ligand'] = imol
 
     def recentre_on_event(self):
         coot.set_rotation_centre(self.x, self.y, self.z)
-        if self.mol_dict['ligand']:
-            __main__.move_molecule_here(self.mol_dict['ligand'])
 
     def reset_params(self):
         self.xtal = None
