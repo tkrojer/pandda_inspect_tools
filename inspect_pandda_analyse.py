@@ -303,6 +303,8 @@ class inspect_gui(object):
             coot.read_cif_dictionary(os.path.join(self.ligcif))
             imol = coot.handle_read_draw_molecule_with_recentre(self.ligcif.replace('.cif','.pdb'), 0)
             self.mol_dict['ligand'] = imol
+            __main__.move_molecule_here(self.mol_dict['ligand'])
+
 
     def reset_params(self):
         self.xtal = None
