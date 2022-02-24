@@ -46,6 +46,13 @@ class inspect_gui(object):
         self.eventCSV = None
         self.reset_params()
 
+        self.ligand_confidence_button_labels = [
+            [0, 'unassigned'],
+            [1, 'low confidence'],
+            [2, 'high confidence']
+        ]
+
+
     def StartGUI(self):
 
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -158,14 +165,34 @@ class inspect_gui(object):
 
         frame = gtk.Frame(label='Ligand Modeling')
         hbox = gtk.HBox()
-        merge_ligand_button = gtk.Button(label="Merge Ligand")
         place_ligand_here_button = gtk.Button(label="Place Ligand here")
-        hbox.add(place_ligand_here_button)
         place_ligand_here_button.connect("clicked", self.place_ligand_here)
-        hbox.add(merge_ligand_button)
+        hbox.add(place_ligand_here_button)
+        merge_ligand_button = gtk.Button(label="Merge Ligand")
         merge_ligand_button.connect("clicked", self.merge_ligand_into_protein)
+        hbox.add(merge_ligand_button)
+        reset_to_unfitted_button = gtk.Button(label="Reset to unfitted")
+        reset_to_unfitted_button.connect("clicked", self.reset_to_unfitted)
+        hbox.add(reset_to_unfitted_button)
         frame.add(hbox)
         self.vbox.pack_start(frame)
+
+
+        frame = gtk.Frame(label='Annotation')
+        vbox = gtk.VBox()
+        self.ligand_confidence_button_list = []
+        for n, item in enumerate(self.ligand_confidence_button_labels):
+            if n == 0:
+                button = gtk.RadioButton(None, item[1])
+            else:
+                button = gtk.RadioButton(button, item[1])
+            button.connect("toggled", self.set_ligand_confidence, item[1])
+            self.ligand_confidence_button_list.append(button)
+            vbox.add(button)
+            button.show()
+        frame.add(vbox)
+        self.vbox.pack_start(frame)
+
 
         frame = gtk.Frame(label='Save')
         hbox = gtk.HBox()
@@ -177,6 +204,13 @@ class inspect_gui(object):
 
         self.window.add(self.vbox)
         self.window.show_all()
+
+    def set_ligand_confidence(self, widget, data=None):
+#        print(data)
+#        self.elist[self.index][0] = data
+#        print(self.elist[self.index][0])
+        print(self.elist[0])
+        print(self.elist[1])
 
     def select_pandda_folder(self, widget):
         dlg = gtk.FileChooserDialog("Open..", None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
@@ -408,6 +442,9 @@ class inspect_gui(object):
         coot.merge_molecules_py([self.mol_dict['ligand']], self.mol_dict['protein'])
         print('===> deleting ligand molecule')
         coot.close_molecule(self.mol_dict['ligand'])
+
+    def reset_to_unfitted(self, widget):
+        print("hallo")
 
     def save_next(self, widget):
         if os.path.isfile(os.path.join(self.panddaDir,'processed_datasets', self.xtal,'modelled_structures', 'fitted-v0001.pdb')):
