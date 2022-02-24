@@ -380,12 +380,12 @@ class inspect_gui(object):
 
         self.update_labels()
 
+        self.load_ligcif()
         self.load_pdb()
         self.load_emap()
         self.load_zmap()
         self.load_xraymap()
         self.load_averagemap()
-        self.load_ligcif()
 
         coot.set_rotation_centre(self.x, self.y, self.z)
 
