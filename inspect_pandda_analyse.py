@@ -208,8 +208,8 @@ class inspect_gui(object):
     def set_ligand_confidence(self, widget, data=None):
         if widget.get_active():
             self.elist[self.index][self.ligand_confidence_index] = data
-            with open('output.csv', 'w') as csvfile:
-                print('saving csv file')
+            with open(os.path.join(self.panddaDir,'analyses','pandda_inspect_events.csv'), 'w') as csvfile:
+                print('updating {0!s}'.format(os.path.join(self.panddaDir,'analyses','pandda_inspect_events.csv')))
                 writer = csv.writer(csvfile)
                 writer.writerows(self.elist)
 
