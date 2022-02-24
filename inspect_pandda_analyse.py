@@ -440,7 +440,10 @@ class inspect_gui(object):
             self.mol_dict['averagemap'] = imol
             coot.set_colour_map_rotation_on_read_pdb(0)
         else:
+#            coot.toggle_display_map(imol, 0)
+
             print('WARNING: average map is already loaded')
+            print(self.mol_dict['averagemap'])
 
     def CANCEL(self, widget):
         self.window.destroy()
