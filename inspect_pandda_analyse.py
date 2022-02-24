@@ -207,14 +207,22 @@ class inspect_gui(object):
 
     def set_ligand_confidence(self, widget, data=None):
         if widget.get_active():
-            print(data)
-            for n, item in enumerate(self.elist[0]):
-                if item == 'Ligand Confidence':
-                    self.elist[self.index][n] = data
+            self.elist[self.index][self.ligand_confidence_index] = data
             with open('output.csv', 'w') as csvfile:
                 print('saving csv file')
                 writer = csv.writer(csvfile)
                 writer.writerows(self.elist)
+
+    def set_ligand_confidence_button(self):
+        foundItem = False
+        for item in self.ligand_confidence_button_labels:
+            if item[1] == self.ligand_confidence:
+                self.ligand_confidence_button_list[item[0]].set_active()
+                foundItem = True
+                break
+        if not foundItem:
+            self.ligand_confidence_button_list[0].set_active()
+
 
     def select_pandda_folder(self, widget):
         dlg = gtk.FileChooserDialog("Open..", None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
@@ -365,6 +373,7 @@ class inspect_gui(object):
         self.resolution = None
         self.r_free = None
         self.r_work = None
+        self.ligand_confidence = None
 
     def update_params(self):
         self.xtal = self.elist[self.index][0]
@@ -383,6 +392,7 @@ class inspect_gui(object):
         self.resolution = self.elist[self.index][18]
         self.r_free = self.elist[self.index][20]
         self.r_work = self.elist[self.index][21]
+        self.ligand_confidence = self.elist[self.index][self.ligand_confidence_index]
 
     def update_labels(self):
         self.xtal_label.set_label(self.xtal)
@@ -421,7 +431,7 @@ class inspect_gui(object):
             self.index = len(self.elist) - 1
 
         self.update_params()
-
+        self.set_ligand_confidence_button()
         self.update_labels()
 
         self.recentre_on_event()
@@ -506,6 +516,10 @@ class inspect_gui(object):
 
         r = csv.reader(open(self.siteCSV))
         self.slist = list(r)
+
+        for n, item in enumerate(self.elist[0]):
+            if item == 'Ligand Confidence':
+                self.ligand_confidence_index = n
 
     def toggle_emap(self, widget):
         if self.mol_dict['emap'] is not None:
