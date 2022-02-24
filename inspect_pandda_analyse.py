@@ -428,10 +428,12 @@ class inspect_gui(object):
             self.mol_dict['xraymap'] = imol
             coot.set_colour_map_rotation_on_read_pdb(0)
         else:
-            print('WARNING: (2)fofc maps are already loaded')
-            print(self.mol_dict['xraymap'])
-            print(self.mol_dict['xraymap'][0])
-            print(self.mol_dict['xraymap'][1])
+            if self.show_xraymap == 0:
+                self.show_xraymap = 1
+            else:
+                self.show_xraymap = 0
+            __main__.toggle_display_map(self.mol_dict['xraymap'][0], self.show_xraymap)
+            __main__.toggle_display_map(self.mol_dict['xraymap'][1], self.show_xraymap)
 
     def get_averagemap(self):
         averagemap = ''
