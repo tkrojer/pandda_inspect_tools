@@ -139,14 +139,20 @@ class inspect_gui(object):
         frame.add(hbox)
         self.vbox.add(frame)
 
-        frame = gtk.Frame(label='Maps')
+        frame = gtk.Frame(label='Toggle Maps')
         hbox = gtk.HBox()
-        load_x_ray_maps_button = gtk.Button(label="Load (2)fofc maps")
-        load_average_map_button = gtk.Button(label="Load average map")
-        hbox.add(load_x_ray_maps_button)
-        load_x_ray_maps_button.connect("clicked", self.load_x_ray_maps)
-        hbox.add(load_average_map_button)
-        load_average_map_button.connect("clicked", self.load_average_map)
+        toggle_emap_button = gtk.Button(label="event map")
+        hbox.add(toggle_emap_button)
+        toggle_emap_button.connect("clicked", self.toggle_emap)
+        toggle_zmap_button = gtk.Button(label="Z-map")
+        hbox.add(toggle_zmap_button)
+        toggle_zmap_button.connect("clicked", self.toggle_zmap)
+        toggle_x_ray_maps_button = gtk.Button(label="(2)fofc maps")
+        hbox.add(toggle_x_ray_maps_button)
+        toggle_x_ray_maps_button.connect("clicked", self.toggle_x_ray_maps)
+        toggle_average_map_button = gtk.Button(label="average map")
+        hbox.add(toggle_average_map_button)
+        toggle_average_map_button.connect("clicked", self.toggle_average_map)
         frame.add(hbox)
         self.vbox.pack_start(frame)
 
@@ -218,10 +224,6 @@ class inspect_gui(object):
 
     def get_emap(self):
         emap = ''
-#        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
-#                                       '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.ccp4'.format(self.xtal, self.event, self.bdc))):
-#            emap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
-#                                       '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.ccp4'.format(self.xtal, self.event, self.bdc))
         if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                                        '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))):
             emap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
@@ -230,13 +232,22 @@ class inspect_gui(object):
 
     def get_zmap(self):
         zmap = ''
-#        if os.path.isfile(
-#                os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.ccp4'.format(self.xtal))):
-#            zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.ccp4'.format(self.xtal))
         if os.path.isfile(
                 os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal))):
             zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal))
         return zmap
+
+    def get_xraymap(self):
+        xraymap = ''
+        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-pandda-input.mtz'.format(self.xtal))):
+            xraymap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-pandda-input.mtz'.format(self.xtal))
+        return xraymap
+
+    def get_averagemap(self):
+        averagemap = ''
+        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))):
+            averagemap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))
+        return averagemap
 
     def get_ligcif(self):
         ligcif = ''
@@ -253,6 +264,8 @@ class inspect_gui(object):
         self.pdb = None
         self.emap = None
         self.zmap = None
+        self.xraymap = None
+        self.averagemap = None
         self.ligcif = None
         self.x = None
         self.y = None
@@ -269,6 +282,8 @@ class inspect_gui(object):
         self.pdb = self.get_pdb()
         self.emap = self.get_emap()
         self.zmap = self.get_zmap()
+        self.xraymap = self.get_xraymap()
+        self.averagemap = self.get_averagemap()
         self.ligcif = self.get_ligcif()
         self.x = float(self.elist[self.index][12])
         self.y = float(self.elist[self.index][13])
@@ -303,6 +318,8 @@ class inspect_gui(object):
             'averagemap': None
             }
 
+        self.show_emap = 0
+        self.show_zmap = 0
         self.show_xraymap = 0
         self.show_averagemap = 0
 
@@ -327,6 +344,7 @@ class inspect_gui(object):
         self.mol_dict['emap'] = imol
         coot.set_colour_map_rotation_on_read_pdb(0)
         coot.set_last_map_colour(0, 0, 1)
+        self.show_emap = 1
         # event map contour level:
         # if you divide it by (1-bdc) you get the contour level in RMSD.
         # for 1-bdc = 0.3, then contouring at 0.3 is 1 RMSD, 0.6 is 2 RMSD, etc.
@@ -334,10 +352,22 @@ class inspect_gui(object):
 #        emap_level = 1.0 - float(self.bdc)
 #        coot.set_contour_level_in_sigma(imol[0], float(self.bdc))
         coot.set_default_initial_contour_level_for_difference_map(3)
-#        imol = coot.handle_read_ccp4_map(self.zmap, 1)
         imol = coot.auto_read_make_and_draw_maps(self.zmap)
         self.mol_dict['zmap'] = imol
         coot.set_contour_level_in_sigma(imol[0], 3)
+        self.show_zmap = 1
+
+        imol = coot.auto_read_make_and_draw_maps(self.xraymap)
+        self.mol_dict['xraymap'] = imol
+        coot.set_colour_map_rotation_on_read_pdb(0)
+        self.show_xraymap = 1
+        coot.set_last_map_colour(0, 0, 1)
+
+        imol = coot.auto_read_make_and_draw_maps(self.averagemap)
+        self.mol_dict['averagemap'] = imol
+        coot.set_colour_map_rotation_on_read_pdb(0)
+        self.show_averagemap = 1
+        coot.set_last_map_colour(0, 0, 1)
 
         if os.path.isfile(self.ligcif):
             imol = coot.handle_read_draw_molecule_with_recentre(self.ligcif.replace('.cif','.pdb'), 0)
@@ -415,19 +445,24 @@ class inspect_gui(object):
         r = csv.reader(open(self.siteCSV))
         self.slist = list(r)
 
-    def get_xraymap(self):
-        xraymap = ''
-        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-pandda-input.mtz'.format(self.xtal))):
-            xraymap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-pandda-input.mtz'.format(self.xtal))
-        return xraymap
+    def toggle_emap(self, widget):
+        if self.mol_dict['emap'] is not None:
+            if self.show_emap == 0:
+                self.show_emap = 1
+            else:
+                self.show_emap = 0
+            __main__.toggle_display_map(self.mol_dict['emap'][0], self.show_emap)
 
-    def load_x_ray_maps(self, widget):
-        if self.mol_dict['xraymap'] is None:
-            xraymap = self.get_xraymap()
-            imol = coot.auto_read_make_and_draw_maps(xraymap)
-            self.mol_dict['xraymap'] = imol
-            coot.set_colour_map_rotation_on_read_pdb(0)
-        else:
+    def toggle_zmap(self, widget):
+        if self.mol_dict['zmap'] is not None:
+            if self.show_zmap == 0:
+                self.show_zmap = 1
+            else:
+                self.show_zmap = 0
+            __main__.toggle_display_map(self.mol_dict['zmap'][0], self.show_zmap)
+
+    def toggle_x_ray_maps(self, widget):
+        if self.mol_dict['xraymap'] is not None:
             if self.show_xraymap == 0:
                 self.show_xraymap = 1
             else:
@@ -435,27 +470,13 @@ class inspect_gui(object):
             __main__.toggle_display_map(self.mol_dict['xraymap'][0], self.show_xraymap)
             __main__.toggle_display_map(self.mol_dict['xraymap'][1], self.show_xraymap)
 
-    def get_averagemap(self):
-        averagemap = ''
-        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))):
-            averagemap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))
-        return averagemap
-
-    def load_average_map(self, widget):
-        if self.mol_dict['averagemap'] is None:
-            averagemap = self.get_averagemap()
-            imol = coot.auto_read_make_and_draw_maps(averagemap)
-            self.mol_dict['averagemap'] = imol
-            coot.set_colour_map_rotation_on_read_pdb(0)
-            self.show_averagemap = 1
-        else:
-            print('WARNING: average map is already loaded')
+    def toggle_average_map(self, widget):
+        if self.mol_dict['averagemap'] is not None:
             if self.show_averagemap == 0:
                 self.show_averagemap = 1
             else:
                 self.show_averagemap = 0
             __main__.toggle_display_map(self.mol_dict['averagemap'][0], self.show_averagemap)
-
 
     def CANCEL(self, widget):
         self.window.destroy()
