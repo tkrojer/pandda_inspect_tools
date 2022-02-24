@@ -385,13 +385,15 @@ class inspect_gui(object):
 
         self.update_labels()
 
+        self.recentre_on_event()
+
         self.load_ligcif()
         self.load_pdb()
         self.load_emap()
         self.load_zmap()
         self.load_xraymap()
         self.load_averagemap()
-        self.recentre_on_event()
+
 
 
     def place_ligand_here(self, widget):
