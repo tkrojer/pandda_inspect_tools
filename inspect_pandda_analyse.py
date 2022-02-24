@@ -215,7 +215,8 @@ class inspect_gui(object):
 #            if item == 'Ligand Confidence':
 #                self.elist[self.index][n] = data
 #        print(self.elist[self.index][n])
-        print(widget.get_active())
+        if widget.get_active():
+            print(data)
 
 
 
