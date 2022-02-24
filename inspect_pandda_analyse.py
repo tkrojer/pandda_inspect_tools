@@ -211,7 +211,7 @@ class inspect_gui(object):
             for n, item in enumerate(self.elist[0]):
                 if item == 'Ligand Confidence':
                     self.elist[self.index][n] = data
-            with open('output.csv', 'w', newline='') as csvfile:
+            with open('output.csv', 'w') as csvfile:
                 print('saving csv file')
                 writer = csv.writer(csvfile)
                 writer.writerows(self.elist)
