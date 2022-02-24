@@ -207,6 +207,7 @@ class inspect_gui(object):
 
     def set_ligand_confidence(self, widget, data=None):
         if widget.get_active():
+            print(data)
             for n, item in enumerate(self.elist[0]):
                 if item == 'Ligand Confidence':
                     self.elist[self.index][n] = data
