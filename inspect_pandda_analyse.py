@@ -209,12 +209,15 @@ class inspect_gui(object):
 #        print(data)
 #        self.elist[self.index][0] = data
 #        print(self.elist[self.index][0])
-        print(self.elist[0])
-        print(self.elist[1])
-        for n, item in enumerate(self.elist[0]):
-            if item == 'Ligand Confidence':
-                self.elist[self.index][n] = data
-        print(self.elist[self.index][n])
+#        print(self.elist[0])
+#        print(self.elist[1])
+#        for n, item in enumerate(self.elist[0]):
+#            if item == 'Ligand Confidence':
+#                self.elist[self.index][n] = data
+#        print(self.elist[self.index][n])
+        print(widget.get_active())
+
+
 
 
     def select_pandda_folder(self, widget):
