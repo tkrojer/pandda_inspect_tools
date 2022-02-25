@@ -67,7 +67,7 @@ def assign_modelled_ligand_to_event_coordinate(model, event):
                     c.add_residue(residue, 0)
                     distance = event.dist(c.calculate_center_of_mass())
                     print(distance, event.tolist(), c.calculate_center_of_mass().tolist())
-                    if distance < 5:
+                    if distance < 8:
                         lig = residue.name + '-' + chain.name + '-' + str(residue.seqid.num)
     return lig
 
