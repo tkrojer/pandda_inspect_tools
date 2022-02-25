@@ -54,7 +54,7 @@ def export_pandda_models(panddaDir, analyseOnly):
     ligand_confidence_index = get_ligand_confidence_index(inspect_csv)
     for maps in sorted(glob.glob(os.path.join(panddaDir, 'processed_datasets', '*',
                                               'modelled_structures','*-pandda-model.pdb'))):
-        sample_id = maps.split('/')[len(maps.split('/'))-2]
+        sample_id = maps.split('/')[len(maps.split('/'))-3]
         print('{0!s}:'.format(sample_id))
         get_info(inspect_csv, sample_id, ligand_confidence_index)
 
