@@ -567,8 +567,8 @@ class inspect_gui(object):
         for i, item in enumerate(self.elist):
             print(i, item)
             if item[11] == str(new_site):
-                index_increment = self.index + i - 1
-                print('COOOL', self.index, index_increment)
+                index_increment = self.index + i - 2
+                print('COOOL', self.index, i, index_increment)
                 break
         print('---->', n, current_site, new_site)
         self.change_event(index_increment)
