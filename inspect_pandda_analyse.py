@@ -30,6 +30,7 @@ import __main__
 
 import csv
 
+
 class inspect_gui(object):
 
     def __init__(self):
@@ -66,7 +67,7 @@ class inspect_gui(object):
         self.selected_selection_criterion = None
 
 
-    def StartGUI(self):
+    def startGUI(self):
 
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.connect("delete_event", gtk.main_quit)
@@ -161,8 +162,6 @@ class inspect_gui(object):
         hbox.add(outer_frame)
         self.vbox.add(hbox)
 
-
-
         frame = gtk.Frame(label='Navigator')
         vbox = gtk.VBox()
         hbox = gtk.HBox()
@@ -231,7 +230,6 @@ class inspect_gui(object):
         frame.add(vbox)
         self.vbox.pack_start(frame)
 
-
         frame = gtk.Frame(label='Save')
         hbox = gtk.HBox()
         self.save_next_button = gtk.Button(label="Save Model")
@@ -246,8 +244,8 @@ class inspect_gui(object):
     def set_ligand_confidence(self, widget, data=None):
         if widget.get_active():
             self.elist[self.index][self.ligand_confidence_index] = data
-            with open(os.path.join(self.panddaDir,'analyses','pandda_inspect_events.csv'), 'w') as csvfile:
-                print('updating {0!s}'.format(os.path.join(self.panddaDir,'analyses','pandda_inspect_events.csv')))
+            with open(os.path.join(self.panddaDir, 'analyses', 'pandda_inspect_events.csv'), 'w') as csvfile:
+                print('updating {0!s}'.format(os.path.join(self.panddaDir, 'analyses', 'pandda_inspect_events.csv')))
                 writer = csv.writer(csvfile)
                 writer.writerows(self.elist)
 
@@ -262,13 +260,12 @@ class inspect_gui(object):
             print(self.ligand_confidence_button_list)
             self.ligand_confidence_button_list[0].set_active(True)
 
-
     def select_pandda_folder(self, widget):
         dlg = gtk.FileChooserDialog("Open..", None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
                                     (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
-        response = dlg.run()
+#        response = dlg.run()
         self.panddaDir = dlg.get_filename()
-        self.eventCSV = os.path.realpath(os.path.join(self.panddaDir,'analyses','pandda_inspect_events.csv'))
+        self.eventCSV = os.path.realpath(os.path.join(self.panddaDir, 'analyses', 'pandda_inspect_events.csv'))
         self.siteCSV = os.path.realpath(os.path.join(self.panddaDir, 'analyses', 'pandda_inspect_events.csv'))
 
         if not os.path.isfile(self.eventCSV):
@@ -317,9 +314,9 @@ class inspect_gui(object):
     def get_emap(self):
         emap = ''
         if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
-                                       '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))):
+                '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))):
             emap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
-                                       '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))
+                '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))
         return emap
 
     def load_emap(self):
@@ -351,8 +348,10 @@ class inspect_gui(object):
 
     def get_xraymap(self):
         xraymap = ''
-        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-pandda-input.mtz'.format(self.xtal))):
-            xraymap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-pandda-input.mtz'.format(self.xtal))
+        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets',
+                                       self.xtal, '{0!s}-pandda-input.mtz'.format(self.xtal))):
+            xraymap = os.path.join(self.panddaDir, 'processed_datasets',
+                                   self.xtal, '{0!s}-pandda-input.mtz'.format(self.xtal))
         return xraymap
 
     def load_xraymap(self):
@@ -365,8 +364,10 @@ class inspect_gui(object):
 
     def get_averagemap(self):
         averagemap = ''
-        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))):
-            averagemap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,'{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))
+        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
+                                       '{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))):
+            averagemap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
+                                      '{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))
         return averagemap
 
     def load_averagemap(self):
@@ -520,18 +521,22 @@ class inspect_gui(object):
         print("hallo")
 
     def save_next(self, widget):
-        if os.path.isfile(os.path.join(self.panddaDir,'processed_datasets', self.xtal,'modelled_structures', 'fitted-v0001.pdb')):
+        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
+                                       'modelled_structures', 'fitted-v0001.pdb')):
             n = []
-            for p in sorted(glob.glob(os.path.join(self.panddaDir,'processed_datasets', self.xtal,'modelled_structures', 'fitted-v*.pdb'))):
+            for p in sorted(glob.glob(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
+                                                   'modelled_structures', 'fitted-v*.pdb'))):
                 n.append(int(p[p.rfind('fitted-v')+8:].replace('.pdb','')))
                 new = 'fitted-v' + (4-len(str(max(n)+1))) * '0' + str(max(n)+1) + '.pdb'
         else:
                 new = 'fitted-v0001.pdb'
         coot.write_pdb_file(self.mol_dict['protein'], os.path.join(
-                    self.panddaDir,'processed_datasets', self.xtal,'modelled_structures', new))
-        if os.path.isfile(os.path.join(self.panddaDir,'processed_datasets', self.xtal,'modelled_structures', '{0!s}-pandda-model.pdb'.format(self.xtal))):
-            os.remove(os.path.join(self.panddaDir,'processed_datasets', self.xtal,'modelled_structures', '{0!s}-pandda-model.pdb'.format(self.xtal)))
-        os.chdir(os.path.join(self.panddaDir,'processed_datasets', self.xtal,'modelled_structures'))
+                    self.panddaDir, 'processed_datasets', self.xtal, 'modelled_structures', new))
+        if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
+                                       'modelled_structures', '{0!s}-pandda-model.pdb'.format(self.xtal))):
+            os.remove(os.path.join(self.panddaDir,'processed_datasets', self.xtal,
+                                   'modelled_structures', '{0!s}-pandda-model.pdb'.format(self.xtal)))
+        os.chdir(os.path.join(self.panddaDir, 'processed_datasets', self.xtal, 'modelled_structures'))
         if os.name == 'nt':
             os.popen('copy {0!s} {1!s}-pandda-model.pdb'.format(new, self.xtal))
         else:
@@ -541,12 +546,6 @@ class inspect_gui(object):
         self.selected_selection_criterion = self.select_events_combobox.get_active_text()
         print("You selected to {0!s}".format(self.selected_selection_criterion))
         self.index = -1
-
-        # reset index
-        # set selection mode
-        # check self.elist for number of event fitting (optional)
-
-
 
     def previous_event(self, widget):
         self.change_event(-1)
@@ -565,12 +564,9 @@ class inspect_gui(object):
         new_site = current_site + n
         index_increment = 0
         for i, item in enumerate(self.elist):
-            print(i, item)
             if item[11] == str(new_site):
                 index_increment = i - self.index
-                print('COOOL', self.index, i, index_increment)
                 break
-        print('---->', n, current_site, new_site)
         self.change_event(index_increment)
 
     def change_event(self, n):
@@ -651,4 +647,4 @@ class inspect_gui(object):
         self.window.destroy()
 
 if __name__ == '__main__':
-    inspect_gui().StartGUI()
+    inspect_gui().startGUI()
