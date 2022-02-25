@@ -65,10 +65,9 @@ def assign_modelled_ligand_to_event_coordinate(model, event):
                 if residue.name == 'LIG':
                     c = gemmi.Chain(chain.name)
                     c.add_residue(residue, 0)
-                    print(dir(c))
                     distance = event.dist(c.calculate_center_of_mass())
                     if distance < 5:
-                        lig = residue.name + '-' + chain.name + '-' + residue.seqid.num
+                        lig = residue.name + '-' + chain.name + '-' + str(residue.seqid.num)
     return lig
 
 
