@@ -48,15 +48,16 @@ def get_info(inspect_csv, sample_id, ligand_confidence_index):
     for item in inspect_csv:
         if item[0] == sample_id:
             table.append([item[1], item[11], item[2], item[ligand_confidence_index]])
-    print(tabulate((table), headers=header))
+    print(tabulate((table), headers=header),"\n\n")
 
 def export_pandda_models(panddaDir, analyseOnly):
     inspect_csv = read_inspect_event_csv_as_list(panddaDir)
     ligand_confidence_index = get_ligand_confidence_index(inspect_csv)
+    print("-->", ligand_confidence_index)
     for maps in sorted(glob.glob(os.path.join(panddaDir, 'processed_datasets', '*',
                                               'modelled_structures','*-pandda-model.pdb'))):
         sample_id = maps.split('/')[len(maps.split('/'))-3]
-        print('{0!s}:'.format(sample_id))
+        print('{0!s}:\n'.format(sample_id))
         get_info(inspect_csv, sample_id, ligand_confidence_index)
 
 
