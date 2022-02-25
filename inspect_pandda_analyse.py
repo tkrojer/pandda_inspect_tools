@@ -77,13 +77,26 @@ class inspect_gui(object):
         self.window.set_title("inspect")
         self.vbox = gtk.VBox()  # this is the main container
 
-        frame = gtk.Frame(label='Open')
+        frame = gtk.Frame(label='PanDDA folder')
         hbox = gtk.HBox()
         select_pandda_folder_button = gtk.Button(label="select pandda directory")
         hbox.add(select_pandda_folder_button)
         select_pandda_folder_button.connect("clicked", self.select_pandda_folder)
         frame.add(hbox)
         self.vbox.pack_start(frame)
+
+        frame = gtk.Frame(label='Event selection')
+        hbox = gtk.HBox()
+        self.select_events_combobox = gtk.combo_box_new_text()
+        #        self.select_events_combobox.connect("changed", self.set_selection_mode)
+        for citeria in self.selection_criteria:
+            self.select_events_combobox.append_text(citeria)
+        hbox.pack_start(self.select_events_combobox)
+        select_events_button = gtk.Button(label="Go")
+        select_events_button.connect("clicked", self.select_events)
+        hbox.pack_start(select_events_button)
+        frame.add(hbox)
+        self.vbox.add(frame)
 
         outer_frame = gtk.Frame()
         hbox = gtk.HBox()
@@ -150,18 +163,6 @@ class inspect_gui(object):
         hbox.add(outer_frame)
         self.vbox.add(hbox)
 
-        frame = gtk.Frame(label='Select events')
-        hbox = gtk.HBox()
-        self.select_events_combobox = gtk.combo_box_new_text()
-#        self.select_events_combobox.connect("changed", self.set_selection_mode)
-        for citeria in self.selection_criteria:
-            self.select_events_combobox.append_text(citeria)
-        hbox.pack_start(self.select_events_combobox)
-        select_events_button = gtk.Button(label="Go")
-        select_events_button.connect("clicked", self.select_events)
-        hbox.pack_start(select_events_button)
-        frame.add(hbox)
-        self.vbox.add(frame)
 
 
         frame = gtk.Frame(label='Navigator')
@@ -520,7 +521,7 @@ class inspect_gui(object):
             os.symlink(new, '{0!s}-pandda-model.pdb'.format(self.xtal))
 
     def select_events(self, widget):
-        self.selected_selection_criterion = elf.select_events_combobox.get_active_text()
+        self.selected_selection_criterion = self.select_events_combobox.get_active_text()
         print("You selected to {0!s}".format(self.selected_selection_criterion))
         self.index = -1
 
