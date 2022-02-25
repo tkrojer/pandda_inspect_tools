@@ -564,8 +564,8 @@ class inspect_gui(object):
         current_site = int(self.site)
         new_site = current_site + 1
         index_increment = 0
-        for i in self.elist:
-            if self.elist[i][11] == str(new_site):
+        for i, item in enumerate(self.elist):
+            if item[11] == str(new_site):
                 index_increment = self.index + i
         self.change_event(index_increment)
 
