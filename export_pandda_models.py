@@ -24,6 +24,7 @@ import sys
 import os
 import csv
 from tabulate import tabulate
+import gemmi
 
 def read_inspect_event_csv_as_list(panddaDir):
     inspect_csv = os.path.join(panddaDir, 'analyses', 'pandda_inspect_events.csv')
@@ -34,6 +35,7 @@ def read_inspect_event_csv_as_list(panddaDir):
     r = csv.reader(open(inspect_csv))
     return list(r)
 
+
 def get_ligand_confidence_index(inspect_csv):
     ligand_confidence_index = 0
     for n, item in enumerate(inspect_csv[0]):  # number of columns at the end can differ
@@ -42,24 +44,49 @@ def get_ligand_confidence_index(inspect_csv):
             break
     return ligand_confidence_index
 
-def get_info(inspect_csv, sample_id, ligand_confidence_index):
+
+def get_info(inspect_csv, sample_id, ligand_confidence_index, model):
     table = []
-    header = ['Event', 'Site', 'BDC', 'Ligand confidence']
+    header = ['Event', 'Site', 'BDC', 'Ligand ID', 'Ligand confidence']
     for item in inspect_csv:
         if item[0] == sample_id:
-            table.append([item[1], item[11], item[2], item[ligand_confidence_index]])
+            event = gemmi.Position(float(item[12]), float(item[13]), float(item[13]))
+            ligand = assign_modelled_ligand_to_event_coordinate(model, event)
+            table.append([item[1], item[11], item[2], ligand, item[ligand_confidence_index]])
     print(tabulate((table), headers=header))
     print("\n\n")
+
+def assign_modelled_ligand_to_event_coordinate(model, event):
+    lig = "unknown"
+    structure = gemmi.read_structure(model, merge_chain_parts=True)
+    for mod in structure:
+        for chain in mod:
+            for residue in chain:
+                if residue.name == 'LIG':
+                    c = gemmi.Chain(chain.name)
+                    c.add_residue(residue, 0)
+                    distance = event.dist(c.calculate_center_of_mass())
+                    if distance < 5:
+                        lig = residue.name + '-' + chain.name + '-' + residue.seqid.num
+    return lig
+
+
+def items_to_check():
+    number_of_modeled_structures = 0
+    number_of_structures_with_at_least_one_high_confidence_ligand = 0
+    number_of_modeled_ligands = 0
+    number_of_high_confidence_ligands = 0
+    number_of_low_confidence_ligands = 0
+
 
 def export_pandda_models(panddaDir, analyseOnly):
     inspect_csv = read_inspect_event_csv_as_list(panddaDir)
     ligand_confidence_index = get_ligand_confidence_index(inspect_csv)
-    print("-->", ligand_confidence_index)
-    for maps in sorted(glob.glob(os.path.join(panddaDir, 'processed_datasets', '*',
+    for str in sorted(glob.glob(os.path.join(panddaDir, 'processed_datasets', '*',
                                               'modelled_structures','*-pandda-model.pdb'))):
-        sample_id = maps.split('/')[len(maps.split('/'))-3]
+        sample_id = str.split('/')[len(str.split('/'))-3]
         print('{0!s}:\n'.format(sample_id))
-        get_info(inspect_csv, sample_id, ligand_confidence_index)
+        get_info(inspect_csv, sample_id, ligand_confidence_index, str)
 
 
 
@@ -97,9 +124,10 @@ def usage():
         'ccp4-python convert_event_map_to_mtz.py -p <pandda_dir>\n'
         'e.g.\n'
         'ccp4-python convert_event_map_to_mtz.py -p /data/user/pandda\n'
+        'Default: export all structures that have a ligand modelled as ensemble model'
         '\n'
         'additional command line options:\n'
-        '--axis, -a AXIS_ORDER\n'
+        '--highconfidence, -a AXIS_ORDER\n'
         '    changes axis order of input map as specified, e.g. -a zyx\n'
         '--overwrite, -o\n'
         '    flag to overwrite existing mtz files\n'
@@ -108,10 +136,15 @@ def usage():
 
 def main(argv):
     panddaDir = None
-    analyseOnly = False
+    export = False
+    highconfidenceOnly = False
+    lowconfidenceOnly = False
+    ensembleOnly = True
+    singleOnly = False
+    mixed = False
 
     try:
-        opts, args = getopt.getopt(argv,"p:ha",["panddadir=", "analyse"])
+        opts, args = getopt.getopt(argv,"p:ha",["panddadir=", "export"])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -122,8 +155,13 @@ def main(argv):
             sys.exit()
         elif opt in ("-p", "--panddadir"):
             panddaDir = arg
-        elif opt in ("-a", "--analyse"):
-            analyseOnly = True
+        elif opt in ("-e", "--export"):
+            export = True
+        elif opt in ("-hi", "--highconfidence"):
+            highconfidenceOnly = True
+        elif opt in ("-lo", "--lowconfidence"):
+            lowconfidenceOnly = True
+
 
     if os.path.isdir(panddaDir):
         export_pandda_models(panddaDir, analyseOnly)
