@@ -79,7 +79,7 @@ def items_to_check():
     number_of_low_confidence_ligands = 0
 
 
-def export_pandda_models(panddaDir, analyseOnly):
+def export_pandda_models(panddaDir):
     inspect_csv = read_inspect_event_csv_as_list(panddaDir)
     ligand_confidence_index = get_ligand_confidence_index(inspect_csv)
     for str in sorted(glob.glob(os.path.join(panddaDir, 'processed_datasets', '*',
@@ -164,7 +164,7 @@ def main(argv):
 
 
     if os.path.isdir(panddaDir):
-        export_pandda_models(panddaDir, analyseOnly)
+        export_pandda_models(panddaDir)
     else:
         print('ERROR: pandda directory does not exist -> {0!s}'.format(panddaDir))
 
