@@ -164,6 +164,7 @@ class inspect_gui(object):
 
 
         frame = gtk.Frame(label='Navigator')
+        vbox = gtk.VBox()
         hbox = gtk.HBox()
         previous_event_button = gtk.Button(label="<<< Event")
         previous_event_button.connect("clicked", self.previous_event)
@@ -171,13 +172,16 @@ class inspect_gui(object):
         next_event_button = gtk.Button(label="Event >>>")
         next_event_button.connect("clicked", self.next_event)
         hbox.pack_start(next_event_button)
+        vbox.add(hbox)
+        hbox = gtk.HBox()
         previous_site_button = gtk.Button(label="<<< Site")
         previous_site_button.connect("clicked", self.previous_site)
         hbox.pack_start(previous_site_button)
-        next_site_button = gtk.Button(label="Event >>>")
+        next_site_button = gtk.Button(label="Site >>>")
         next_site_button.connect("clicked", self.next_site)
         hbox.pack_start(next_site_button)
-        frame.add(hbox)
+        vbox.add(hbox)
+        frame.add(vbox)
         self.vbox.add(frame)
 
         frame = gtk.Frame(label='Toggle Maps')
@@ -554,7 +558,7 @@ class inspect_gui(object):
         self.change_site(-1)
 
     def next_site(self, widget):
-        self.next_site(1)
+        self.change_site(1)
 
     def change_site(self, n):
         current_site = int(self.site)
