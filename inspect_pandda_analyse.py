@@ -54,6 +54,19 @@ class inspect_gui(object):
             [4, 'high confidence']
         ]
 
+        self.selection_criteria = [
+            'show all events',
+            'show unviewed events',
+            'show viewed events',
+            'show unassigned',
+            'show no ligands bound',
+            'show unknown ligands',
+            'show low confidence ligands',
+            'show high confidence ligands'
+        ]
+
+        self.selected_selection_criterion = None
+
 
     def StartGUI(self):
 
@@ -137,14 +150,28 @@ class inspect_gui(object):
         hbox.add(outer_frame)
         self.vbox.add(hbox)
 
-        frame = gtk.Frame(label='Navigator')
-        PREVbutton = gtk.Button(label="<<<")
-        NEXTbutton = gtk.Button(label=">>>")
-        PREVbutton.connect("clicked", self.backward)
-        NEXTbutton.connect("clicked", self.forward)
+        frame = gtk.Frame(label='Select events')
         hbox = gtk.HBox()
-        hbox.pack_start(PREVbutton)
-        hbox.pack_start(NEXTbutton)
+        self.select_events_combobox = gtk.combo_box_new_text()
+#        self.select_events_combobox.connect("changed", self.set_selection_mode)
+        for citeria in self.selection_criteria:
+            self.select_events_combobox.append_text(citeria)
+        hbox.pack_start(self.select_events_combobox)
+        select_events_button = gtk.Button(label="Go")
+        select_events_button.connect("clicked", self.select_events)
+        hbox.pack_start(select_events_button)
+        frame.add(hbox)
+        self.vbox.add(frame)
+
+
+        frame = gtk.Frame(label='Navigator')
+        previous_event_button = gtk.Button(label="<<< Event")
+        next_event_button = gtk.Button(label="Event >>>")
+        previous_event_button.connect("clicked", self.previous_event)
+        next_event_button.connect("clicked", self.next_event)
+        hbox = gtk.HBox()
+        hbox.pack_start(previous_event_button)
+        hbox.pack_start(next_event_button)
         frame.add(hbox)
         self.vbox.add(frame)
 
@@ -404,6 +431,16 @@ class inspect_gui(object):
         self.site_label.set_label(self.site)
         self.bdc_label.set_label(self.bdc)
 
+    def current_sample_matches_selection_criteria(self):
+        show_event = False
+        if self.selected_selection_criterion == "show all events":
+            show_event = True
+        elif self.selected_selection_criterion == "show high confidence ligands":
+            if "high confidence" in self.ligand_confidence:
+                show_event = True
+        return show_event
+
+
     def RefreshData(self):
 
         self.reset_params()
@@ -432,17 +469,20 @@ class inspect_gui(object):
             self.index = len(self.elist) - 1
 
         self.update_params()
-        self.set_ligand_confidence_button()
-        self.update_labels()
 
-        self.recentre_on_event()
-
-        self.load_ligcif()
-        self.load_pdb()
-        self.load_emap()
-        self.load_zmap()
-        self.load_xraymap()
-        self.load_averagemap()
+        # check if event fits selection criteria
+        if self.current_sample_matches_selection_criteria():
+            self.set_ligand_confidence_button()
+            self.update_labels()
+            self.recentre_on_event()
+            self.load_ligcif()
+            self.load_pdb()
+            self.load_emap()
+            self.load_zmap()
+            self.load_xraymap()
+            self.load_averagemap()
+        else:
+            self.next_event()
 
 
 
@@ -479,11 +519,22 @@ class inspect_gui(object):
         else:
             os.symlink(new, '{0!s}-pandda-model.pdb'.format(self.xtal))
 
-    def backward(self, widget):
+    def select_events(self, widget):
+        self.selected_selection_criterion = elf.select_events_combobox.get_active_text()
+        print("You selected to {0!s}".format(self.selected_selection_criterion))
+        self.index = -1
+
+        # reset index
+        # set selection mode
+        # check self.elist for number of event fitting (optional)
+
+
+
+    def previous_event(self, widget):
         self.index -= 1
         self.RefreshData()
 
-    def forward(self, widget):
+    def next_event(self, widget):
         self.index += 1
         self.RefreshData()
 
@@ -512,13 +563,15 @@ class inspect_gui(object):
             writer.writerows(l)
 
     def parsepanddaDir(self):
+        print("reading {0!s}".format(self.eventCSV))
         r = csv.reader(open(self.eventCSV))
         self.elist = list(r)
 
+        print("reading {0!s}".format(self.siteCSV))
         r = csv.reader(open(self.siteCSV))
         self.slist = list(r)
 
-        for n, item in enumerate(self.elist[0]):
+        for n, item in enumerate(self.elist[0]): # number of columns at the end can differ
             if item == 'Ligand Confidence':
                 self.ligand_confidence_index = n
 
