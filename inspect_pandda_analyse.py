@@ -562,7 +562,7 @@ class inspect_gui(object):
 
     def change_site(self, n):
         current_site = int(self.site)
-        new_site = current_site + 1
+        new_site = current_site + n
         index_increment = 0
         for i, item in enumerate(self.elist):
             print(i, item)
