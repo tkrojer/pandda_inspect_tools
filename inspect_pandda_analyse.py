@@ -56,8 +56,6 @@ class inspect_gui(object):
 
         self.selection_criteria = [
             'show all events',
-            'show unviewed events',
-            'show viewed events',
             'show unassigned',
             'show no ligands bound',
             'show unknown ligands',
@@ -166,13 +164,19 @@ class inspect_gui(object):
 
 
         frame = gtk.Frame(label='Navigator')
-        previous_event_button = gtk.Button(label="<<< Event")
-        next_event_button = gtk.Button(label="Event >>>")
-        previous_event_button.connect("clicked", self.previous_event)
-        next_event_button.connect("clicked", self.next_event)
         hbox = gtk.HBox()
+        previous_event_button = gtk.Button(label="<<< Event")
+        previous_event_button.connect("clicked", self.previous_event)
         hbox.pack_start(previous_event_button)
+        next_event_button = gtk.Button(label="Event >>>")
+        next_event_button.connect("clicked", self.next_event)
         hbox.pack_start(next_event_button)
+        previous_site_button = gtk.Button(label="<<< Site")
+        previous_site_button.connect("clicked", self.previous_site)
+        hbox.pack_start(previous_site_button)
+        next_site_button = gtk.Button(label="Event >>>")
+        next_site_button.connect("clicked", self.next_site)
+        hbox.pack_start(next_site_button)
         frame.add(hbox)
         self.vbox.add(frame)
 
@@ -436,6 +440,15 @@ class inspect_gui(object):
         show_event = False
         if self.selected_selection_criterion == "show all events":
             show_event = True
+        elif self.selected_selection_criterion == "show no ligands bound":
+            if "no ligand bound" in self.ligand_confidence:
+                show_event = True
+        elif self.selected_selection_criterion == "show unknown ligands":
+            if "unknown ligand" in self.ligand_confidence:
+                show_event = True
+        elif self.selected_selection_criterion == "show low confidence ligands":
+            if "low confidence" in self.ligand_confidence:
+                show_event = True
         elif self.selected_selection_criterion == "show high confidence ligands":
             if "high confidence" in self.ligand_confidence:
                 show_event = True
@@ -536,6 +549,21 @@ class inspect_gui(object):
 
     def next_event(self, widget):
         self.change_event(1)
+
+    def previous_site(self, widget):
+        self.change_site(-1)
+
+    def next_site(self, widget):
+        self.next_site(1)
+
+    def change_site(self, n):
+        current_site = int(self.site)
+        new_site += n
+        index_increment = 0
+        for i in self.elist:
+            if self.elist[i][11] == str(new_site):
+                index_increment = self.index + i
+        self.change_event(index_increment)
 
     def change_event(self, n):
         self.index += n
