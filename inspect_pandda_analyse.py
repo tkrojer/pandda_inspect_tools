@@ -483,7 +483,7 @@ class inspect_gui(object):
             self.load_xraymap()
             self.load_averagemap()
         else:
-            self.next_event()
+            self.change_event(1)
 
 
 
@@ -532,11 +532,13 @@ class inspect_gui(object):
 
 
     def previous_event(self, widget):
-        self.index -= 1
-        self.RefreshData()
+        self.change_event(-1)
 
     def next_event(self, widget):
-        self.index += 1
+        self.change_event(1)
+
+    def change_event(self, n):
+        self.index += n
         self.RefreshData()
 
     def initialize_inspect_events_csv_file(self, analyse_csv):
