@@ -562,7 +562,7 @@ class inspect_gui(object):
 
     def change_site(self, n):
         current_site = int(self.site)
-        new_site += n
+        new_site = current_site + 1
         index_increment = 0
         for i in self.elist:
             if self.elist[i][11] == str(new_site):
