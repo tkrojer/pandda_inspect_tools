@@ -43,11 +43,12 @@ def get_ligand_confidence_index(inspect_csv):
     return ligand_confidence_index
 
 def get_info(inspect_csv, sample_id, ligand_confidence_index):
-    table = [['Event', 'Site', 'BDC', 'Ligand confidence']]
+    table = []
+    header = ['Event', 'Site', 'BDC', 'Ligand confidence']
     for item in inspect_csv:
         if item[0] == sample_id:
             table.append([item[1], item[11], item[2], item[ligand_confidence_index]])
-    print(tabulate(table))
+    print(tabulate(table), headers=header)
 
 def export_pandda_models(panddaDir, analyseOnly):
     inspect_csv = read_inspect_event_csv_as_list(panddaDir)
