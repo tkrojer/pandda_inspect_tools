@@ -391,8 +391,8 @@ class inspect_gui(object):
 #            imol = coot.handle_read_draw_molecule_with_recentre(self.ligcif.replace('.cif', '.pdb'), 1)
             self.mol_dict['ligand'] = imol
             coot.seqnum_from_serial_number(imol, "X", 0)
-            coot.set_b_factor_residue_range(12, "X", 1, 1, 20.00)
-            coot.set_occupancy_residue_range(12, "X", 1, 1, float(self.bdc*2))
+            coot.set_b_factor_residue_range(imol, "X", 1, 1, 20.00)
+            coot.set_occupancy_residue_range(imol, "X", 1, 1, float(self.bdc*2))
 
     def recentre_on_event(self):
         coot.set_rotation_centre(self.x, self.y, self.z)
