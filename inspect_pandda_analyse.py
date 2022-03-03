@@ -263,7 +263,7 @@ class inspect_gui(object):
     def select_pandda_folder(self, widget):
         dlg = gtk.FileChooserDialog("Open..", None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
                                     (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
-#        response = dlg.run()
+        response = dlg.run()
         self.panddaDir = dlg.get_filename()
         self.eventCSV = os.path.realpath(os.path.join(self.panddaDir, 'analyses', 'pandda_inspect_events.csv'))
         self.siteCSV = os.path.realpath(os.path.join(self.panddaDir, 'analyses', 'pandda_inspect_events.csv'))
