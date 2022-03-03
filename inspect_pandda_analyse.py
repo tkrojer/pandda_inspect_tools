@@ -330,7 +330,7 @@ class inspect_gui(object):
         # for 1-bdc = 0.3, then contouring at 0.3 is 1 RMSD, 0.6 is 2 RMSD, etc.
         # note self.bdc is actually 1-bdc
         # emap_level = 1.0 - float(self.bdc)
-        coot.set_contour_level_in_sigma(imol[0], float(self.bdc2)*2)
+        coot.set_contour_level_in_sigma(imol[0], float(self.bdc)*2)
 
     def get_zmap(self):
         zmap = ''
