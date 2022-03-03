@@ -494,6 +494,7 @@ class inspect_gui(object):
 
         # check if event fits selection criteria
         if self.current_sample_matches_selection_criteria():
+            print('--> loading files for {0!s}, event: {1!s}, site: {2!s}'.format(self.xtal, self.event, self.site))
             self.set_ligand_confidence_button()
             self.update_labels()
             self.recentre_on_event()
@@ -504,6 +505,7 @@ class inspect_gui(object):
             self.load_xraymap()
             self.load_averagemap()
         else:
+            print('--> {0!s}, event: {1!s}, site: {2!s} does not match selection criteria; skipping'.format(self.xtal, self.event, self.site))
             self.change_event(1)
 
 
