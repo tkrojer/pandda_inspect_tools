@@ -330,7 +330,7 @@ class inspect_gui(object):
         # for 1-bdc = 0.3, then contouring at 0.3 is 1 RMSD, 0.6 is 2 RMSD, etc.
         # note self.bdc is actually 1-bdc
         # emap_level = 1.0 - float(self.bdc)
-        coot.set_contour_level_in_sigma(imol[0], float(self.bdc*2))
+        coot.set_contour_level_in_sigma(imol[0], float(self.bdc2)*2)
 
     def get_zmap(self):
         zmap = ''
@@ -392,7 +392,7 @@ class inspect_gui(object):
             self.mol_dict['ligand'] = imol
             coot.seqnum_from_serial_number(imol, "X", 0)
             coot.set_b_factor_residue_range(imol, "X", 1, 1, 20.00)
-            coot.set_occupancy_residue_range(imol, "X", 1, 1, float(self.bdc*2))
+            coot.set_occupancy_residue_range(imol, "X", 1, 1, float(self.bdc)*2)
 
     def recentre_on_event(self):
         coot.set_rotation_centre(self.x, self.y, self.z)
