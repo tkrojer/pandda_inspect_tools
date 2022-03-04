@@ -53,7 +53,7 @@ def get_info(inspect_csv, sample_id, ligand_confidence_index, model):
     for item in inspect_csv:
         if item[0] == sample_id:
             event = gemmi.Position(float(item[12]), float(item[13]), float(item[14]))
-            print(float(item[12]), float(item[13]), float(item[14]))
+#            print(float(item[12]), float(item[13]), float(item[14]))
             ligand, distance = assign_modelled_ligand_to_event_coordinate(model, event)
             print(ligand, distance)
             table.append([item[1], item[11], item[2], ligand, distance, item[ligand_confidence_index]])
@@ -75,8 +75,10 @@ def assign_modelled_ligand_to_event_coordinate(model, event):
                     c = gemmi.Chain(chain.name)
                     c.add_residue(residue, 0)
                     distance = round(event.dist(c.calculate_center_of_mass()), 2)
+                    lig = residue.name + '-' + chain.name + '-' + str(residue.seqid.num)
+                    print(lig, distance)
 #                    print(distance, event.tolist(), c.calculate_center_of_mass().tolist())
-                    if distance < 7:
+                    if distance < 8:
                         lig = residue.name + '-' + chain.name + '-' + str(residue.seqid.num)
     return lig, str(distance)
 
