@@ -53,9 +53,7 @@ def get_info(inspect_csv, sample_id, ligand_confidence_index, model):
     for item in inspect_csv:
         if item[0] == sample_id:
             event = gemmi.Position(float(item[12]), float(item[13]), float(item[14]))
-#            print(float(item[12]), float(item[13]), float(item[14]))
             ligand, distance = assign_modelled_ligand_to_event_coordinate(model, event)
-            print(ligand, distance)
             table.append([item[1], item[11], item[2], ligand, distance, item[ligand_confidence_index]])
             if item[ligand_confidence_index] not in ligand_confidence_list:
                 ligand_confidence_list.append(item[ligand_confidence_index])
