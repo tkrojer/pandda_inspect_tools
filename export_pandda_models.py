@@ -172,7 +172,9 @@ def export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, 
         ligand_confidence_list = get_info(inspect_csv, sample_id, ligand_confidence_index, str)
 
         if export:
+            print('---->')
             if highconfidenceOnly:
+                print('XXXXXXXXX')
                 if "high confidence" in ligand_confidence_list:
                     prepare_model(panddaDir, sample_id, ensembleOnly, overwrite)
                     prepare_destination_dir(destinationDir, sample_id, overwrite)
