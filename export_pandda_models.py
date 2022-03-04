@@ -75,11 +75,13 @@ def assign_modelled_ligand_to_event_coordinate(model, event):
                     c = gemmi.Chain(chain.name)
                     c.add_residue(residue, 0)
                     distance = round(event.dist(c.calculate_center_of_mass()), 2)
-                    lig = residue.name + '-' + chain.name + '-' + str(residue.seqid.num)
-                    print(lig, distance)
+#                    lig = residue.name + '-' + chain.name + '-' + str(residue.seqid.num)
+#                    print(lig, distance)
 #                    print(distance, event.tolist(), c.calculate_center_of_mass().tolist())
                     if distance < 8:
                         lig = residue.name + '-' + chain.name + '-' + str(residue.seqid.num)
+                    else:
+                        distance = "unknown"
     return lig, str(distance)
 
 
