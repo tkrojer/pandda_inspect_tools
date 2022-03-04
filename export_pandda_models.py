@@ -94,7 +94,7 @@ def run_giant_merge_conformations(sample_id):
         ' minor=modelled_structures/{0!s}-pandda-model.pdb '.format(sample_id) +
         ' > /dev/null'
     )
-    print(cmd)
+    os.system(cmd)
 
 def prepare_model(panddaDir, sample_id, ensembleOnly, overwrite):
     print("--> ensemble model preparation")
@@ -145,22 +145,22 @@ def linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensem
     os.chdir(os.path.join(destinationDir, sample_id))
     if ensembleOnly:
         if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-model.pdb')):
-            print('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-model.pdb'))))
+            os.system('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-model.pdb'))))
         if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.refmac.params')):
-            print('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.refmac.params'))))
+            os.system('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.refmac.params'))))
         if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.phenix.params')):
-            print('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.phenix.params'))))
+            os.system('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.phenix.params'))))
     else:
         if os.path.isfile(model):
-            print('ln -s {0!s} pandda-model.pdb'.format(os.path.relpath(model)))
+            os.system('ln -s {0!s} pandda-model.pdb'.format(os.path.relpath(model)))
     if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id))):
-            print('ln -s {0!s} ground-state-average-map.native.mtz'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id)))))
+            os.system('ln -s {0!s} ground-state-average-map.native.mtz'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id)))))
     if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-z_map.native.mtz".format(sample_id))):
-            print('ln -s {0!s} z_map.native.mtz'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-z_map.native.mtz".format(sample_id)))))
+            os.system('ln -s {0!s} z_map.native.mtz'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-z_map.native.mtz".format(sample_id)))))
     for event in glob.glob(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-event_*_map.native.mtz".format(sample_id))):
         filename = event[event.rfind('/')+1:]
         new_filename = filename.replace(sample_id + '-', '')
-        print('ln -s {0!s} {1!s}'.format(event, new_filename))
+        os.system('ln -s {0!s} {1!s}'.format(event, new_filename))
 
 def export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, lowconfidenceOnly, ensembleOnly, overwrite):
     inspect_csv = read_inspect_event_csv_as_list(panddaDir)
@@ -172,17 +172,18 @@ def export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, 
         ligand_confidence_list = get_info(inspect_csv, sample_id, ligand_confidence_index, str)
 
         if export:
-            print('---->')
             if highconfidenceOnly:
-                print('XXXXXXXXX')
+                print('--> exporting high confidence models only')
                 if "high confidence" in ligand_confidence_list:
                     prepare_model(panddaDir, sample_id, ensembleOnly, overwrite)
                     prepare_destination_dir(destinationDir, sample_id, overwrite)
                     linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensembleOnly, str)
             elif lowconfidenceOnly:
+                print('--> exporting low confidence models only')
                 if "low confidence" in ligand_confidence_list and not "high confidence" in ligand_confidence_list:
                     prepare_model(panddaDir, sample_id, ensembleOnly, overwrite)
-
+            else:
+                print('--> exporting ALL available models')
 
 
 
