@@ -146,23 +146,38 @@ def linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensem
         print("--> linking files to destination directory")
         os.chdir(os.path.join(destinationDir, sample_id))
         if ensembleOnly:
-            if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-model.pdb')):
-                os.system('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-model.pdb'))))
-            if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.refmac.params')):
-                os.system('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.refmac.params'))))
-            if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.phenix.params')):
-                os.system('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.phenix.params'))))
+            if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id,
+                                           'multi-state-model.pdb')):
+                os.system('ln -s {0!s}'.format(os.path.relpath(
+                    os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-model.pdb'))))
+            if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id,
+                                           'multi-state-restraints.refmac.params')):
+                os.system('ln -s {0!s}'.format(os.path.relpath(
+                    os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.refmac.params'))))
+            if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id,
+                                           'multi-state-restraints.phenix.params')):
+                os.system('ln -s {0!s}'.format(os.path.relpath(
+                    os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.phenix.params'))))
         else:
             if os.path.isfile(model):
                 os.system('ln -s {0!s} pandda-model.pdb'.format(os.path.relpath(model)))
-        if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id))):
-                os.system('ln -s {0!s} ground-state-average-map.native.mtz'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id)))))
-        if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-z_map.native.mtz".format(sample_id))):
-                os.system('ln -s {0!s} z_map.native.mtz'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-z_map.native.mtz".format(sample_id)))))
-        for event in glob.glob(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-event_*_map.native.mtz".format(sample_id))):
+        if os.path.isfile(os.path.join(panddaDir, 'processed_datasets',
+                                       sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id))):
+                os.system('ln -s {0!s} ground-state-average-map.native.mtz'.format(
+                    os.path.relpath(os.path.join(
+                        panddaDir, 'processed_datasets',
+                        sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id)))))
+        if os.path.isfile(os.path.join(panddaDir, 'processed_datasets',
+                                       sample_id, "{0!s}-z_map.native.mtz".format(sample_id))):
+                os.system('ln -s {0!s} z_map.native.mtz'.format(
+                    os.path.relpath(os.path.join(panddaDir, 'processed_datasets',
+                                                 sample_id, "{0!s}-z_map.native.mtz".format(sample_id)))))
+        for event in glob.glob(os.path.join(panddaDir, 'processed_datasets',
+                                            sample_id, "{0!s}-event_*_map.native.mtz".format(sample_id))):
             filename = event[event.rfind('/')+1:]
             new_filename = filename.replace(sample_id + '-', '')
             os.system('ln -s {0!s} {1!s}'.format(event, new_filename))
+
 
 def export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, lowconfidenceOnly, ensembleOnly, overwrite):
     inspect_csv = read_inspect_event_csv_as_list(panddaDir)
@@ -171,9 +186,9 @@ def export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, 
                                               'modelled_structures','*-pandda-model.pdb'))):
         sample_id = str.split('/')[len(str.split('/'))-3]
         print('{0!s}:\n'.format(sample_id))
-        ligand_confidence_list = get_info(inspect_csv, sample_id, ligand_confidence_index, str)
 
         if export:
+            ligand_confidence_list = get_info(inspect_csv, sample_id, ligand_confidence_index, str)
             if highconfidenceOnly:
                 print('--> exporting high confidence models only')
                 if "high confidence" in ligand_confidence_list:
@@ -186,10 +201,8 @@ def export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, 
                     prepare_model(panddaDir, sample_id, ensembleOnly, overwrite)
             else:
                 print('--> exporting ALL available models')
-
-
-
-
+        else:
+            ligand_confidence_list = get_info(inspect_csv, sample_id, ligand_confidence_index, str)
 
 
 def usage():
@@ -204,7 +217,8 @@ def usage():
         'ccp4-python export_pandda_models.py -p <pandda_dir>\n'
         'e.g.\n'
         'ccp4-python export_pandda_models.py -p /data/user/pandda\n'
-        'Default: export all structures that have a ligand modelled as ensemble model'
+        '\n'
+        'Default: export all structures that have a ligand modelled as single conformer model\n'
         '\n'
         'additional command line options:\n'
         '--export, -e\n'
@@ -221,6 +235,8 @@ def usage():
         '    Flag to overwrite previously exported files.\n'
     )
     print(usage)
+
+
 
 def main(argv):
     panddaDir = None
