@@ -142,28 +142,26 @@ def prepare_destination_dir(destinationDir, sample_id, overwrite):
 
 def linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensembleOnly, model, overwrite):
     if not overwrite:
-        pass
-
-    print("--> linking files to destination directory")
-    os.chdir(os.path.join(destinationDir, sample_id))
-    if ensembleOnly:
-        if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-model.pdb')):
-            os.system('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-model.pdb'))))
-        if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.refmac.params')):
-            os.system('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.refmac.params'))))
-        if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.phenix.params')):
-            os.system('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.phenix.params'))))
-    else:
-        if os.path.isfile(model):
-            os.system('ln -s {0!s} pandda-model.pdb'.format(os.path.relpath(model)))
-    if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id))):
-            os.system('ln -s {0!s} ground-state-average-map.native.mtz'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id)))))
-    if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-z_map.native.mtz".format(sample_id))):
-            os.system('ln -s {0!s} z_map.native.mtz'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-z_map.native.mtz".format(sample_id)))))
-    for event in glob.glob(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-event_*_map.native.mtz".format(sample_id))):
-        filename = event[event.rfind('/')+1:]
-        new_filename = filename.replace(sample_id + '-', '')
-        os.system('ln -s {0!s} {1!s}'.format(event, new_filename))
+        print("--> linking files to destination directory")
+        os.chdir(os.path.join(destinationDir, sample_id))
+        if ensembleOnly:
+            if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-model.pdb')):
+                os.system('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-model.pdb'))))
+            if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.refmac.params')):
+                os.system('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.refmac.params'))))
+            if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.phenix.params')):
+                os.system('ln -s {0!s}'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.phenix.params'))))
+        else:
+            if os.path.isfile(model):
+                os.system('ln -s {0!s} pandda-model.pdb'.format(os.path.relpath(model)))
+        if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id))):
+                os.system('ln -s {0!s} ground-state-average-map.native.mtz'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id)))))
+        if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-z_map.native.mtz".format(sample_id))):
+                os.system('ln -s {0!s} z_map.native.mtz'.format(os.path.relpath(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-z_map.native.mtz".format(sample_id)))))
+        for event in glob.glob(os.path.join(panddaDir, 'processed_datasets', sample_id, "{0!s}-event_*_map.native.mtz".format(sample_id))):
+            filename = event[event.rfind('/')+1:]
+            new_filename = filename.replace(sample_id + '-', '')
+            os.system('ln -s {0!s} {1!s}'.format(event, new_filename))
 
 def export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, lowconfidenceOnly, ensembleOnly, overwrite):
     inspect_csv = read_inspect_event_csv_as_list(panddaDir)
