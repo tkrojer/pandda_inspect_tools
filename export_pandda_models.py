@@ -140,7 +140,10 @@ def prepare_destination_dir(destinationDir, sample_id, overwrite):
             print("removing " + f)
 
 
-def linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensembleOnly, model):
+def linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensembleOnly, model, overwrite):
+    if not overwrite:
+        pass
+
     print("--> linking files to destination directory")
     os.chdir(os.path.join(destinationDir, sample_id))
     if ensembleOnly:
@@ -177,7 +180,7 @@ def export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, 
                 if "high confidence" in ligand_confidence_list:
                     prepare_model(panddaDir, sample_id, ensembleOnly, overwrite)
                     prepare_destination_dir(destinationDir, sample_id, overwrite)
-                    linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensembleOnly, str)
+                    linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensembleOnly, str, overwrite)
             elif lowconfidenceOnly:
                 print('--> exporting low confidence models only')
                 if "low confidence" in ligand_confidence_list and not "high confidence" in ligand_confidence_list:
@@ -226,7 +229,7 @@ def main(argv):
     export = False
     highconfidenceOnly = False
     lowconfidenceOnly = False
-    ensembleOnly = True
+    ensembleOnly = False
     overwrite = False
 
     try:
