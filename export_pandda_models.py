@@ -136,8 +136,9 @@ def prepare_destination_dir(destinationDir, sample_id, overwrite):
             print("removing " + f)
             os.remove(f)
         for f in files_to_delete():
-            os.remove(f)
-            print("removing " + f)
+            if os.path.isfile(f):
+                os.remove(f)
+                print("removing " + f)
 
 
 def linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensembleOnly, model, overwrite):
