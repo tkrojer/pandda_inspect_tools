@@ -81,9 +81,9 @@ def assign_modelled_ligand_to_event_coordinate(model, event):
                     if distance < 8:
                         lig = residue.name + '-' + chain.name + '-' + str(residue.seqid.num)
                         dis = distance
-                    else:
-                        lig = "unknown"
-                        dis = "unknown"
+#                    else:
+#                        lig = "unknown"
+#                        dis = "unknown"
     return lig, str(dis)
 
 
