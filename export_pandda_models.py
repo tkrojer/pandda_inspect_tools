@@ -178,7 +178,7 @@ def export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, 
                 if "high confidence" in ligand_confidence_list:
                     prepare_model(panddaDir, sample_id, ensembleOnly, overwrite)
                     prepare_destination_dir(destinationDir, sample_id, overwrite)
-                    linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensembleOnly, model)
+                    linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensembleOnly, str)
             elif lowconfidenceOnly:
                 if "low confidence" in ligand_confidence_list and not "high confidence" in ligand_confidence_list:
                     prepare_model(panddaDir, sample_id, ensembleOnly, overwrite)
