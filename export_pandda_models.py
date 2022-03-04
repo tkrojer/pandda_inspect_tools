@@ -141,7 +141,7 @@ def prepare_destination_dir(destinationDir, sample_id, overwrite):
 
 
 def linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensembleOnly, model, overwrite):
-    if not overwrite:
+    if overwrite:
         print("--> linking files to destination directory")
         os.chdir(os.path.join(destinationDir, sample_id))
         if ensembleOnly:
