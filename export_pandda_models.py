@@ -253,11 +253,14 @@ def main(argv):
             overwrite = True
 
 
-    if os.path.isdir(panddaDir):
-        export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, lowconfidenceOnly,
-                             ensembleOnly, overwrite)
-    else:
-        print('ERROR: pandda directory does not exist -> {0!s}'.format(panddaDir))
+    try:
+        if os.path.isdir(panddaDir):
+            export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, lowconfidenceOnly,
+                                 ensembleOnly, overwrite)
+        else:
+            print('ERROR: pandda directory does not exist -> {0!s}'.format(panddaDir))
+    except TypeError:
+        usage()
 
 if __name__ == '__main__':
     main(sys.argv[1:])
