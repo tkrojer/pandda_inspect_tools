@@ -81,12 +81,19 @@ Note: the interface goes through the events/ sites in the same order as in the p
 
 ![](https://github.com/tkrojer/pandda_inspect_tools/blob/main/images/Slide4.png)
 
-Once you get towards a 
+For ligand modelling, press "Place Ligand here" (1) then fit the ligand to the density. When you are done, press "Merge Ligand" (2). The ligand molecule will disappear but will immediately reappear once you move the scene a bit. Finallyt, press "Revert to unfitted" in case you want to start all over again.</br>
+Note:
+- the 
+- inspect_pandda_analyse.py, just like pandda.inspect, looks for ligand PDB and CIF files in the XXX folder
 
-SAVE
+![](https://github.com/tkrojer/pandda_inspect_tools/blob/main/images/Slide5.png)
 
-Note: symbolic links somehow don't work as nicely under Windows, so instead of linking the latest fitted_###.pdb file to XXX, the interface will instead make a copy of the file.
+Finally, you can annotate the event with the given options (1). All annotattion are stored in pandda_inspect_events.csv and the "event selection" dropdown can be used to only look at subsets of the pandda results. The last thing to do is to press "Save Model", then a copy of the model on the screen will be saved in the "modelled_structures" folder of the respective dataset directory.
 
+Note:
+- the models is saved as a single conformer model and the placed ligand gets a occupancy value assigned that is twice the BDC value. This is exactly the same as in pandda.inspect. Creatiion of an ensemble model only happens at the export stage.
+
+![](https://github.com/tkrojer/pandda_inspect_tools/blob/main/images/Slide6.png)
 
 
 ## export_pandda_models.py
