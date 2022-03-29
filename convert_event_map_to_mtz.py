@@ -41,7 +41,7 @@ def get_axis_order(sample_id, map_name, maps):
                 a = line.split()[5]
                 b = line.split()[6]
                 c = line.split()[7]
-                print('axis order of maps is : -> {0!s} {1!s} {2!s}'.format(a, b, c))
+                print('axis order of maps is : {0!s} {1!s} {2!s}'.format(a, b, c))
                 break
 
     os.remove('mapmask.log')

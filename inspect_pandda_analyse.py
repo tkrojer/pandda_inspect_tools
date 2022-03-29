@@ -208,7 +208,7 @@ class inspect_gui(object):
         merge_ligand_button = gtk.Button(label="Merge Ligand")
         merge_ligand_button.connect("clicked", self.merge_ligand_into_protein)
         hbox.add(merge_ligand_button)
-        reset_to_unfitted_button = gtk.Button(label="Reset to unfitted")
+        reset_to_unfitted_button = gtk.Button(label="Revert to unfitted")
         reset_to_unfitted_button.connect("clicked", self.reset_to_unfitted)
         hbox.add(reset_to_unfitted_button)
         frame.add(hbox)
