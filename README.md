@@ -71,7 +71,7 @@ Click on "select pandda directory" and use the folder dialog to select the respe
 
 ![](https://github.com/tkrojer/pandda_inspect_tools/blob/main/images/Slide2.png)
 
-Nothing much will happen (though at some point in the future I will try to make the interface a bit more chatty). Use the "event selection" dropdown (1) to select which events you want to see, then press "Go" (2). 
+Nothing much will happen (though at some point in the future I will try to make the interface a bit more chatty). Use the "event selection" dropdown (1) to select which events you want to see, then press "Go" (2). You can use the buttons in the "Toggle maps" secton to turn different kinds of maps on and off.</br>
 Note: you can use the "Annotation" box at the bottom of the panel to annotate events. Every annotation will be stored in pandda_inspect_events.csv and you can use the "event selection" dropdown to only look at subsets.
 
 ![](https://github.com/tkrojer/pandda_inspect_tools/blob/main/images/Slide3.png)
