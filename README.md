@@ -15,7 +15,7 @@ pandda.analyse creates event, average and z-maps in CCP4 map format and convert_
 
 ### <span style="color:red">**Important**</span>
 <span style="color:red">
-It seems that newer versions of COOT (XXX) occasionally do not display maps from PanDDA around the protein molecule. If this is the case for your maps, then the conversion to MTZ format does not help and you need to swap the axis order of every map before they are correctly displayed. You can use the "-c" option to show the axis order of the current maps and then use the "-a" option to change the axis order. Most of the time, -a xyz will do the job (see examples below).</br>      </br>
+It seems that newer versions of COOT (0.9.6) occasionally do not display maps from PanDDA around the protein molecule. If this is the case for your maps, then the conversion to MTZ format does not help and you need to swap the axis order of every map before they are correctly displayed. You can use the "-c" option to show the axis order of the current maps and then use the "-a" option to change the axis order. Most of the time, -a xyz will do the job (see examples below).</br>      </br>
 Another indication for problems with the axis order of the maps is when you get the following error message:
 
 ```
@@ -61,25 +61,25 @@ or from the COOT gui, by selecting
 ```
 Calculate -> Run Script...
 ```
-Use the file selection dialog to locate the script, then press Open. </br> </br>
+Use the file selection dialog to locate the script, then press Open. In addition to the usual COOT window, a separate window for the inspct interface should appear.  </br> </br>
 
 Once the interface appears, do the following:
 
 ![](https://github.com/tkrojer/pandda_inspect_tools/blob/main/images/Slide1.png)
 
-Click on "select pandda directory" and use the folder dialog to where it is:
+Click on "select pandda directory" and use the folder dialog to select the respective directory:
 
-XXX
+![](https://github.com/tkrojer/pandda_inspect_tools/blob/main/images/Slide2.png)
 
 Nothing much will happen (though at some point in the future I will try to make the interface a bit more chatty). Use the "event selection" dropdown (1) to select which events you want to see, then press "Go" (2). 
 Note: you can use the "Annotation" box at the bottom of the panel to annotate events. Every annotation will be stored in pandda_inspect_events.csv and you can use the "event selection" dropdown to only look at subsets.
 
-XXX
+![](https://github.com/tkrojer/pandda_inspect_tools/blob/main/images/Slide3.png)
 
 Again, not much has happened after you pressed "Go". Now, use the "Event" and "Site" arrows in the "Navigator" section to go through your events. 
 Note: the interface goes through the events/ sites in the same order as in the pandda_inspect_events.csv file.
 
-XXX
+![](https://github.com/tkrojer/pandda_inspect_tools/blob/main/images/Slide4.png)
 
 Once you get towards a 
 
