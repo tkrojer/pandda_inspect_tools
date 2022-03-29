@@ -24,6 +24,24 @@ import sys
 import os
 import gemmi
 
+def get_axis_order(sample_id, map_name, maps):
+    cmd = (
+        'mapmask mapin {0!s} << eof > mapmask.log\n'.format(maps) +
+        ' end\n'
+        'eof\n'
+    )
+
+    print('running mapdump to get axis order for {0!s}'.format(map_name))
+    os.system(cmd)
+
+    if os.path.isfile('mapmask.log'):
+        for line in open('mapmask.log'):
+            if 'Fast, medium, slow axes' in line:
+                a = line.split()[5]
+                b = line.split()[6]
+                c = line.split()[7]
+                print('{0!s}: {1: <15} -> {2!s} {3!s} {4!s}'.format(sample_id, map_name, a, b, c))
+
 
 def change_axis_order(map_name, tmp_map_name, axisOrder):
     if len(axisOrder) != 3:
@@ -64,12 +82,16 @@ def remove_temp_map(tmp_map_name):
     if os.path.isfile(tmp_map_name):
         os.remove(tmp_map_name)
 
-def convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite):
+def convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite, checkOrder):
     print('looking for event maps in {0!s}'.format(panddaDir))
     sampleList = []
     for maps in sorted(glob.glob(os.path.join(panddaDir, 'processed_datasets', '*', '*.ccp4'))):
         tmp_map_name = None
         sample_id = maps.split('/')[len(maps.split('/'))-2]
+        map_name = maps.split('/')[len(maps.split('/'))-1]
+        if checkOrder:
+            get_axis_order(sample_id, map_name, maps)
+            continue
         if sample_id not in sampleList:
             print('converting maps for {0!s}'.format(sample_id))
             sampleList.append(sample_id)
@@ -81,7 +103,6 @@ def convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite):
         else:
             print('ERROR: {0!s} does not exist; cannot get resolution of map later; skipping...'.format(pandda_input_mtz))
             sys.exit(2)
-        map_name = maps.split('/')[len(maps.split('/'))-1]
         print('current map {0!s}'.format(map_name))
         mtz_name = map_name.replace('.ccp4', '.mtz')
         if os.path.isfile(mtz_name) and not overwrite:
@@ -116,10 +137,11 @@ def usage():
 def main(argv):
     panddaDir = None
     axisOrder = None
+    checkOrder = False
     overwrite = False
 
     try:
-        opts, args = getopt.getopt(argv,"p:a:ho",["panddadir=", "axis=", "overwrite"])
+        opts, args = getopt.getopt(argv,"p:a:hoc",["panddadir=", "axis=", "overwrite", "checkaxis"])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -132,11 +154,13 @@ def main(argv):
             panddaDir = arg
         elif opt in ("-a", "--axis"):
             axisOrder = arg
+        elif opt in ("-c", "--checkaxis"):
+            checkOrder = True
         elif opt in ("-o", "--overwrite"):
             overwrite = True
 
     if os.path.isdir(panddaDir):
-        convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite)
+        convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite, checkOrder)
     else:
         print('ERROR: pandda directory does not exist -> {0!s}'.format(panddaDir))
 
