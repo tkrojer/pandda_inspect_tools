@@ -65,6 +65,27 @@ Use the file selection dialog to locate the script, then press Open. </br> </br>
 
 One the interface appears, do the following:
 
+XXX
+
+Click on "select pandda directory" and use the folder dialog to where it is:
+
+XXX
+
+Nothing much will happen (though at some point in the future I will try to make the interface a bit more chatty). Use the "event selection" dropdown (1) to select which events you want to see, then press "Go" (2). 
+Note: you can use the "Annotation" box at the bottom of the panel to annotate events. Every annotation will be stored in pandda_inspect_events.csv and you can use the "event selection" dropdown to only look at subsets.
+
+XXX
+
+Again, not much has happened after you pressed "Go". Now, use the "Event" and "Site" arrows in the "Navigator" section to go through your events. 
+Note: the interface goes through the events/ sites in the same order as in the pandda_inspect_events.csv file.
+
+XXX
+
+Once you get towards a 
+
+SAVE
+
+Note: symbolic links somehow don't work as nicely under Windows, so instead of linking the latest fitted_###.pdb file to XXX, the interface will instead make a copy of the file.
 
 
 
