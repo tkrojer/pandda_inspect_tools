@@ -2,25 +2,56 @@
 
 ## Description
 
-### convert_event_map_to_mtz.py
+This repository contains several programs for manipulation and inspection of results from pandda.analyse. The scripts do essentially the same as the tools provided by the [PanDDA suite](https://pandda.bitbucket.io/#), but they are compatible the latest version of CCP4 and the inspect plugin for COOT also works on Windows operating systems. The scripts work for the original PanDDA program, as well as for the more recent [PanDDA2](https://github.com/ConorFWild/pandda_2_gemmi). The following scripts are included in the repository:
 
-pandda.analyse creates event, average and z-maps in CCP4 map format and convert_event_map_to_mtz.py is a python script to convert the maps into MTZ files. The script can optionally also change the axis order of the maps, because newer versions of COOT do not display the maps correctly in certain space groups.
+- convert_event_map_to_mtz.py
+- inspect_pandda_analyse.py
+- export_pandda_models.py
 
-### inspect_pandda_analyse.py
 
-inspect_pandda_analyse.py is a python plugin for COOT that enables inspection of [PanDDA](https://pandda.bitbucket.io/#) event maps and modelling of ligands. It is a minimalistic version of pandda.inspect, but it works on Windows, MAC and Linux and with the latest version of CCP4.
+## convert_event_map_to_mtz.py
 
-## Installation
+pandda.analyse creates event, average and z-maps in CCP4 map format and convert_event_map_to_mtz.py is a python script to convert the maps into MTZ files. You need to run this script if you want to explore results from pandda.analyse with inspect_pandda_analyse.py because, in contrast to pandda.inspect, it only reads maps as MTZ files and then uses the XXX function in COOT to convert them into (difference) maps.
 
-Download the repository (e.g. as ZIP file) and unpack it where you want to install it. This can be a local drive or a network drivee.
+### <span style="color:red">**Important**</span>
+<span style="color:red">
+It seems that newer versions of COOT (XXX) occasionally do not display maps from PanDDA around the protein molecule. If this is the case for your maps, then the conversion to MTZ format does not help and you need to swap the axis order of every map before they are correctly displayed. You can use the "-c" option to show the axis order of the current maps and then use the "-a" option to change the axis order. Most of the time, -a xyz will do the job (see examples below).</br>      </br>
+Another indication for problems with the axis order of the maps is when you get the following error message:
 
 ```
-pandda_inspect_tools/
-├── README.md
-└── inspect_pandda_analyse.py
+ERROR: grid size is not compatible with space group.
 ```
 
-## Usage
+Do the same as described above, i.e. show the current axis order, then try a permutaton thereof (the option "-a xyz" will do most of the time).* 
+
+#### <span style="color:red">**Notes:**</span>
+- the script will never touch the original maps, i.e. you can run it as often as you want and it will not case any harm!
+- The script will only show you the axis order of the original maps, not of the maps converted to MTZ format
+</span> 
+
+### Usage
+
+```
+# convert maps
+ccp4-python convert_event_map_to_mtz.py -p /data/user/pandda
+
+# show current axis order
+ccp4-python convert_event_map_to_mtz.py -p /data/user/pandda -c
+
+# convert maps and change axis order
+ccp4-python convert_event_map_to_mtz.py -p /data/user/pandda -a xyz
+
+# convert maps, change axis order and overwrite existing MTZ files
+ccp4-python convert_event_map_to_mtz.py -p /data/user/pandda -a xyz -o
+```
+
+
+
+## inspect_pandda_analyse.py
+
+inspect_pandda_analyse.py is a python plugin for COOT that enables inspection of [PanDDA](https://pandda.bitbucket.io/#) event maps and modelling of ligands. It is a minimalistic version of pandda.inspect, but it works on Windows, MAC and Linux and with the latest version of CCP4/ COOT. There is however one important difference to the original pandda.inspect program: inspect_pandda_analyse.py only reads MTZ files, not the CCP4 maps produced by pandda.analyse! This means that you first need to convert the maps with convert_event_map_to_mtz.py before you can view them.
+
+### Usage
 
 The COOT plugin can either be started from the command line by typing
 ```
@@ -30,10 +61,48 @@ or from the COOT gui, by selecting
 ```
 Calculate -> Run Script...
 ```
-Use the file selection dialog to locate the script, then press Open.  
+Use the file selection dialog to locate the script, then press Open. </br> </br>
+
+One the interface appears, do the following:
 
 
-## Missing functionalities
-- annotation of events
-- updating of pandda_inspect_events.csv 
+
+
+## export_pandda_models.py
+
+Script for exporting models built with pandda.inspect or inspect_pandda_analyse.py into a new target directory. The script does similar things like the original pandda.export, but there are a few differences:
+
+- It copies MTZ files with map coeffcients (as generated by convert_event_map_to_mtz.py) into the target directory, but no CCP4 maps.
+- Generation of ensemble models is optional! The default is to export models as single conformer models. You need to use the -n option for the script to first generate an ensemble model with giant.merge_conformations and then to copy the resulting PDB file into the target directory.
+- Default is to just analyse the contents pandda directory, i.e. you need to set the -e option to do the actual export.
+- Finally, please use the -h flag to get a list of all options
+
+
+### Examples:
+
+```
+# show all available options ("-h")
+ccp4-python export_pandda_models.py -h
+
+# export single conformer models from pandda directory ("-p") to target directory ("-d")
+ccp4-python export_pandda_models.py -p /home/tobias/pandda -d /home/tobias/refine -e
+
+# export high-confidence ("-c") single conformer models
+ccp4-python export_pandda_models.py -p /home/tobias/pandda -d /home/tobias/refine -e -c
+
+# export low-confidence ("-l") ensemble ("-n") models
+ccp4-python export_pandda_models.py -p /home/tobias/pandda -d /home/tobias/refine -e -l -n
+```
+
+
+## Prerequistes & Installation
+
+Usage of the scripts does not require any complicated installation procedures, All you need to do is to either download the individual python scripts or download the entire repository (e.g. as ZIP file) and unpack it where you want to install it. This can be a local drive or a network drive. </br>
+
+All you need is a working and reasonably up-to-date version of CCP4 (v7.1 or higher).
+
+convert_event_map_to_mtz.py and export_pandda_models.py work for python2 and python3. They mostly use libraries that are part of most python installations. The only exception is [gemmi](https://gemmi.readthedocs.io/en/latest/#). An easy solution is to run the scripts with ccp4-python which comes with gemmi. Another convenient possibility is to use the conda package manager for gemmi installation.
+
+
+Moreover, they make use of the programs, [mapdump](), [mapmask]() and the standalons version of [gemmi](). But no worries, you will not need to install these programs because they are part of the CCP4 suite and as long as the suite is working on your local machine, they will be availble.
 
