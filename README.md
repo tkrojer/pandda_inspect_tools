@@ -11,7 +11,7 @@ This repository contains several programs for manipulation and inspection of res
 
 ## convert_event_map_to_mtz.py
 
-pandda.analyse creates event, average and z-maps in CCP4 map format and convert_event_map_to_mtz.py is a python script to convert the maps into MTZ files. You need to run this script if you want to explore results from pandda.analyse with inspect_pandda_analyse.py because, in contrast to pandda.inspect, it only reads maps as MTZ files and then uses the XXX function in COOT to convert them into (difference) maps.
+pandda.analyse creates event, average and z-maps in CCP4 map format and convert_event_map_to_mtz.py is a python script to convert the maps into MTZ files. You need to run this script if you want to explore results from pandda.analyse with inspect_pandda_analyse.py because, in contrast to pandda.inspect, it only reads maps as MTZ files and then uses the auto-read function in COOT to convert them into (difference) maps.
 
 ### <span style="color:red">**Important**</span>
 <span style="color:red">
@@ -104,5 +104,5 @@ All you need is a working and reasonably up-to-date version of CCP4 (v7.1 or hig
 convert_event_map_to_mtz.py and export_pandda_models.py work for python2 and python3. They mostly use libraries that are part of most python installations. The only exception is [gemmi](https://gemmi.readthedocs.io/en/latest/#). An easy solution is to run the scripts with ccp4-python which comes with gemmi. Another convenient possibility is to use the conda package manager for gemmi installation.
 
 
-Moreover, they make use of the programs, [mapdump](), [mapmask]() and the standalons version of [gemmi](). But no worries, you will not need to install these programs because they are part of the CCP4 suite and as long as the suite is working on your local machine, they will be availble.
+Moreover, they make use of the programs, [mapdump](https://www.ccp4.ac.uk/html/mapdump.html), [mapmask](https://www.ccp4.ac.uk/html/mapmask.html) and the standalons version of [gemmi](https://gemmi.readthedocs.io/en/latest/utils.html). But no worries, you will not need to install these programs because they are part of the CCP4 suite and as long as the suite is working on your local machine, they will be availble.
 
