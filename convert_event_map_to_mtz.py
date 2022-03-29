@@ -41,6 +41,9 @@ def get_axis_order(sample_id, map_name, maps):
                 b = line.split()[6]
                 c = line.split()[7]
                 print('{0!s}: {1: <15} -> {2!s} {3!s} {4!s}'.format(sample_id, map_name, a, b, c))
+                break
+
+    os.remove('mapmask.log')
 
 
 def change_axis_order(map_name, tmp_map_name, axisOrder):
