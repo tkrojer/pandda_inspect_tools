@@ -65,7 +65,7 @@ Use the file selection dialog to locate the script, then press Open. </br> </br>
 
 Once the interface appears, do the following:
 
-![](https://github.com/tkrojer/pandda_inspect_tools/blob/main/images/slide1.png)
+![](https://github.com/tkrojer/pandda_inspect_tools/blob/main/images/Slide1.png)
 
 Click on "select pandda directory" and use the folder dialog to where it is:
 
