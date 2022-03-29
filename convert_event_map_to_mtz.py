@@ -25,6 +25,7 @@ import os
 import gemmi
 
 def get_axis_order(sample_id, map_name, maps):
+    print('>> checking axis order...')
     cmd = (
         'mapmask mapin {0!s} << eof > mapmask.log\n'.format(maps) +
         ' end\n'
@@ -40,7 +41,7 @@ def get_axis_order(sample_id, map_name, maps):
                 a = line.split()[5]
                 b = line.split()[6]
                 c = line.split()[7]
-                print('{0!s}: {1: <15} -> {2!s} {3!s} {4!s}'.format(sample_id, map_name, a, b, c))
+                print('axis order of maps is : -> {0!s} {1!s} {2!s}'.format(a, b, c))
                 break
 
     os.remove('mapmask.log')
@@ -74,7 +75,7 @@ def get_resolution(pandda_input_mtz):
     return highres
 
 def run_gemmi_aap2sf(map_name, mtz_name,  dmin):
-    print('runnning gemmi map2sf...')
+    print('>> runnning gemmi map2sf...')
     if 'z_map' in map_name:
         cmd = 'gemmi map2sf %s %s DELFWT PHDELWT --dmin=%s' % (map_name, mtz_name, dmin)
     else:
@@ -86,7 +87,7 @@ def remove_temp_map(tmp_map_name):
         os.remove(tmp_map_name)
 
 def convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite, checkOrder):
-    print('looking for event maps in {0!s}'.format(panddaDir))
+    print('>>> looking for event maps in {0!s}'.format(panddaDir))
     sampleList = []
     for maps in sorted(glob.glob(os.path.join(panddaDir, 'processed_datasets', '*', '*.ccp4'))):
         tmp_map_name = None
@@ -94,7 +95,7 @@ def convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite, checkOrder):
         map_name = maps.split('/')[len(maps.split('/'))-1]
         if checkOrder:
             get_axis_order(sample_id, map_name, maps)
-            continue
+            break
         if sample_id not in sampleList:
             print('converting maps for {0!s}'.format(sample_id))
             sampleList.append(sample_id)
