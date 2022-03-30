@@ -2,7 +2,7 @@
 
 ## Description
 
-This repository contains several programs for manipulation and inspection of results from pandda.analyse. The scripts do essentially the same as the tools provided by the [PanDDA suite](https://pandda.bitbucket.io/#), but they are compatible with the latest version of CCP4 and the inspect plugin for COOT also works on Windows operating systems. The scripts work for the original PanDDA program, as well as for the more recent [PanDDA2](https://github.com/ConorFWild/pandda_2_gemmi). The following scripts are included in the repository:
+This repository contains several programs for manipulation and inspection of results from pandda.analyse. The scripts do essentially the same as the tools provided by the [PanDDA suite](https://pandda.bitbucket.io/#), but they are compatible with the latest version of [CCP4](https://www.ccp4.ac.uk/) and the inspect plugin for [COOT](https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/) also works on Windows operating systems. The scripts work for the original PanDDA program, as well as for the more recent [PanDDA2](https://github.com/ConorFWild/pandda_2_gemmi). The following scripts are included in the repository:
 
 - convert_event_map_to_mtz.py
 - inspect_pandda_analyse.py
