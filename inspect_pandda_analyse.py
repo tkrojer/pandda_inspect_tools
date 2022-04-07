@@ -313,10 +313,15 @@ class inspect_gui(object):
 
     def get_emap(self):
         emap = ''
+        event_number = (3 - len(str(self.event))) * '0' + str(self.event)
         if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                 '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))):
             emap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                 '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))
+        elif os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
+                '{0!s}-pandda-output-event-{1!s}.mtz'.format(self.xtal, event_number))):
+            emap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
+                '{0!s}-pandda-output-event-{1!s}.mtz'.format(self.xtal, event_number))
         return emap
 
     def load_emap(self):
@@ -378,10 +383,16 @@ class inspect_gui(object):
         coot.set_last_map_colour(0, 0, 1)
 
     def get_ligcif(self):
+        foundCIF = False
         ligcif = ''
-        for l in glob.glob(os.path.join(self.panddaDir, 'processed_datasets', self.xtal, 'ligand_files', '*cif')):
-            ligcif = l
-            break
+        if self.event:
+            if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal, self.event, 'rhofit', 'best.cif')):
+                ligcif = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, self.event, 'rhofit', 'best.cif')
+                foundCIF = True
+        if not foundCIF:
+            for l in glob.glob(os.path.join(self.panddaDir, 'processed_datasets', self.xtal, 'ligand_files', '*cif')):
+                ligcif = l
+                break
         return ligcif
 
     def load_ligcif(self):
@@ -418,21 +429,21 @@ class inspect_gui(object):
 
     def update_params(self):
         self.xtal = self.elist[self.index][0]
-        self.event = self.elist[self.index][1]
-        self.bdc = self.elist[self.index][2]
-        self.site = self.elist[self.index][11]
+        self.event = self.elist[self.index][self.event_index]
+        self.bdc = self.elist[self.index][self.bdc_index]
+        self.site = self.elist[self.index][self.site_index]
         self.pdb = self.get_pdb()
         self.emap = self.get_emap()
         self.zmap = self.get_zmap()
         self.xraymap = self.get_xraymap()
         self.averagemap = self.get_averagemap()
         self.ligcif = self.get_ligcif()
-        self.x = float(self.elist[self.index][12])
-        self.y = float(self.elist[self.index][13])
-        self.z = float(self.elist[self.index][14])
-        self.resolution = self.elist[self.index][18]
-        self.r_free = self.elist[self.index][20]
-        self.r_work = self.elist[self.index][21]
+        self.x = float(self.elist[self.index][self.x_index])
+        self.y = float(self.elist[self.index][self.y_index])
+        self.z = float(self.elist[self.index][self.z_index])
+        self.resolution = self.elist[self.index][self.resolution_index]
+        self.r_free = self.elist[self.index][self.r_free_index]
+        self.r_work = self.elist[self.index][self.r_work_index]
         self.ligand_confidence = self.elist[self.index][self.ligand_confidence_index]
 
     def update_labels(self):
@@ -620,6 +631,24 @@ class inspect_gui(object):
         for n, item in enumerate(self.elist[0]): # number of columns at the end can differ
             if item == 'Ligand Confidence':
                 self.ligand_confidence_index = n
+            if item == 'event_num' or item == 'event_idx':
+                self.event_index = n
+            if item == 'site_num' or item == 'site_idx':
+                self.site_index = n
+            if item == 'bdc' or item == '1-BDC':
+                self.bdc_index = n
+            if item == 'x':
+                self.x_index = n
+            if item == 'y':
+                self.y_index = n
+            if item == 'z':
+                self.z_index = n
+            if item == 'analysed_resolution' or item == 'high_resolution':
+                self.resolution_index = n
+            if item == 'r_work':
+                self.r_work_index = n
+            if item == 'r_free':
+                self.r_free_index = n
 
     def toggle_emap(self, widget):
         if self.mol_dict['emap'] is not None:
