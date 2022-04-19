@@ -58,6 +58,7 @@ class inspect_gui(object):
 
         self.selection_criteria = [
             'show all events',
+            'show not viewed events',
             'show unassigned',
             'show no ligands bound',
             'show unknown ligands',
@@ -69,7 +70,6 @@ class inspect_gui(object):
 
 
     def startGUI(self):
-
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.connect("delete_event", gtk.main_quit)
         self.window.set_border_width(10)
@@ -215,7 +215,6 @@ class inspect_gui(object):
         frame.add(hbox)
         self.vbox.pack_start(frame)
 
-
         frame = gtk.Frame(label='Annotation')
         vbox = gtk.VBox()
         self.ligand_confidence_button_list = []
@@ -242,13 +241,26 @@ class inspect_gui(object):
         self.window.add(self.vbox)
         self.window.show_all()
 
+    def save_pandda_inspect_events_csv_file(self):
+        with open(os.path.join(self.analysis_folder, 'pandda_inspect_events.csv'), 'w') as csvfile:
+            print('INSPECT - INFO: updating {0!s}'.format(
+                os.path.join(self.analysis_folder, 'pandda_inspect_events.csv')))
+            writer = csv.writer(csvfile)
+            writer.writerows(self.elist)
+
     def set_ligand_confidence(self, widget, data=None):
         if widget.get_active():
             self.elist[self.index][self.ligand_confidence_index] = data
-            with open(os.path.join(self.analysis_folder, 'pandda_inspect_events.csv'), 'w') as csvfile:
-                print('INSPECT - INFO: updating {0!s}'.format(os.path.join(self.analysis_folder, 'pandda_inspect_events.csv')))
-                writer = csv.writer(csvfile)
-                writer.writerows(self.elist)
+            self.save_pandda_inspect_events_csv_file()
+#            with open(os.path.join(self.analysis_folder, 'pandda_inspect_events.csv'), 'w') as csvfile:
+#                print('INSPECT - INFO: updating {0!s}'.format(
+#                    os.path.join(self.analysis_folder, 'pandda_inspect_events.csv')))
+#                writer = csv.writer(csvfile)
+#                writer.writerows(self.elist)
+
+    def save_event_as_viewed(self):
+        self.elist[self.index][self.viewed_index] = 'True'
+        self.save_pandda_inspect_events_csv_file()
 
     def set_ligand_confidence_button(self):
         foundItem = False
@@ -267,7 +279,9 @@ class inspect_gui(object):
         self.panddaDir = dlg.get_filename()
 
         self.analysis_folder = ''
-        if os.path.isdir(os.path.join(self.panddaDir, 'analyses')):
+        if os.path.isdir(os.path.join(self.panddaDir, 'results')):
+            self.analysis_folder = os.path.join(self.panddaDir, 'results')
+        elif os.path.isdir(os.path.join(self.panddaDir, 'analyses')):
             self.analysis_folder = os.path.join(self.panddaDir, 'analyses')
         elif os.path.isdir(os.path.join(self.panddaDir, 'analysis')):
             self.analysis_folder = os.path.join(self.panddaDir, 'analysis')
@@ -493,7 +507,7 @@ class inspect_gui(object):
 
     def update_params(self):
         missing_files = False
-        self.xtal = self.elist[self.index][0]
+        self.xtal = self.elist[self.index][self.xtal_index]
         self.event = self.elist[self.index][self.event_index]
         self.bdc = self.elist[self.index][self.bdc_index]
         self.site = self.elist[self.index][self.site_index]
@@ -539,6 +553,9 @@ class inspect_gui(object):
                 show_event = True
         elif self.selected_selection_criterion == "show high confidence ligands":
             if "high confidence" in self.ligand_confidence:
+                show_event = True
+        elif self.selected_selection_criterion == 'show not viewed events':
+            if not 'True' in self.elist[self.index][self.viewed_index]:
                 show_event = True
         return show_event
 
@@ -594,7 +611,6 @@ class inspect_gui(object):
             self.change_event(1)
 
 
-
     def place_ligand_here(self, widget):
         print('INSPECT - INFO: moving ligand to pointer')
         print('INSPECT - INFO: LIGAND: ', self.mol_dict['ligand'])
@@ -616,7 +632,14 @@ class inspect_gui(object):
                 self.load_pdb()
                 break
 
+    def check_if_modelled_structures_folder_exists(self):
+        modelled_structures = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, 'modelled_structures')
+        if not os.path.isdir(os.path.join(modelled_structures)):
+            print('INSPECT - INFO: creating folder {0!s}'.format(modelled_structures))
+            os.mkdir(modelled_structures)
+
     def save_next(self, widget):
+        self.check_if_modelled_structures_folder_exists()
         if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                                        'modelled_structures', 'fitted-v0001.pdb')):
             n = []
@@ -647,6 +670,7 @@ class inspect_gui(object):
         self.change_event(-1)
 
     def next_event(self, widget):
+        self.save_event_as_viewed()
         self.change_event(1)
 
     def previous_site(self, widget):
@@ -713,7 +737,10 @@ class inspect_gui(object):
         r = csv.reader(open(self.siteCSV))
         self.slist = list(r)
 
+        print("INSPECT - INFO: getting header fields from {0!s}".format(self.eventCSV))
         for n, item in enumerate(self.elist[0]): # number of columns at the end can differ
+            if item == 'dtag':
+                self.xtal_index = n
             if item == 'Ligand Confidence':
                 self.ligand_confidence_index = n
             if item == 'event_num' or item == 'event_idx':
@@ -734,6 +761,30 @@ class inspect_gui(object):
                 self.r_work_index = n
             if item == 'r_free':
                 self.r_free_index = n
+            if item == 'Viewed':
+                self.viewed_index = n
+        self.show_content_of_event_csv_file()
+
+    def show_content_of_event_csv_file(self):
+        print("INSPECT - INFO: showing contents of {0!s}:".format(self.eventCSV))
+        for n,i in enumerate(self.elist):
+            if n == 0:
+                continue
+            x = round(float(self.elist[n][self.x_index]), 1)
+            y = round(float(self.elist[n][self.y_index]), 1)
+            z = round(float(self.elist[n][self.z_index]), 1)
+            info = (
+                'INSPECT - INFO: '
+                ' xtal: {0!s}'.format(self.elist[n][self.xtal_index]) +
+                ' - event/site: {0!s}/{1!s}'.format(self.elist[n][self.event_index],self.elist[n][self.site_index]) +
+                ' - BDC: {0!s}'.format(self.elist[n][self.bdc_index]) +
+                ' - x,y,z: {0!s},{1!s},{2!s}'.format(x, y, z) +
+                ' - Resolution: {0!s}'.format(self.elist[n][self.resolution_index]) +
+                ' - Rwork/Rfree: {0!s}/{1!s}'.format(self.elist[n][self.r_work_index],self.elist[n][self.r_free_index]) +
+                ' - viewed: {0!s}'.format(self.elist[n][self.viewed_index]) +
+                ' - ligand confidence: {0!s}'.format(self.elist[n][self.ligand_confidence_index])
+            )
+            print(info)
 
     def toggle_emap(self, widget):
         if self.mol_dict['emap'] is not None:
