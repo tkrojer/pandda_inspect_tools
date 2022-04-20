@@ -4,12 +4,11 @@
 
 This repository contains several programs for manipulation and inspection of results from pandda.analyse. The scripts do essentially the same as the tools provided by the [PanDDA](https://pandda.bitbucket.io/#) suite, but they are compatible with the latest version of [CCP4](https://www.ccp4.ac.uk/) and the inspect plugin for [COOT](https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/) also works on Windows operating systems. The scripts work for the original PanDDA program, as well as for the more recent [PanDDA2](https://github.com/ConorFWild/pandda_2_gemmi). The following scripts are included in the repository:
 
-- [convert_event_map_to_mtz.py](#onvert_event_map_to_mtz.py)
+- [convert_event_map_to_mtz.py](#event-map-to-mtz-conversion)
 - [inspect_pandda_analyse.py](##inspect_pandda_analyse.py)
 - export_pandda_models.py
 
-
-## convert_event_map_to_mtz.py
+## Event MAP to MTZ conversion
 
 pandda.analyse creates event, average and z-maps in CCP4 map format and convert_event_map_to_mtz.py is a python script to convert the maps into MTZ files. You need to run this script if you want to explore results from pandda.analyse with inspect_pandda_analyse.py because, in contrast to pandda.inspect, it only reads maps as MTZ files and then uses the auto-read function in COOT to convert them into (difference) maps.</br>
 *Note:* the latest version of [PanDDA](https://bitbucket.org/pandda/pandda/src/master/) does write out all maps as MTZ files, so you can't/ don't need to run the script. 
