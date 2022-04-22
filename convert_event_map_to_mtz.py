@@ -24,7 +24,7 @@ import sys
 import os
 import gemmi
 
-def get_axis_order(sample_id, map_name, maps):
+def get_axis_order(map_name, maps):
     print('>> checking axis order...')
     cmd = (
         'mapmask mapin {0!s} << eof > mapmask.log\n'.format(maps) +
@@ -33,6 +33,9 @@ def get_axis_order(sample_id, map_name, maps):
     )
 
     print('running mapdump to get axis order for {0!s}'.format(map_name))
+    
+    print('running with command:\n{0!s}'.format(cmd))
+
     os.system(cmd)
 
     if os.path.isfile('mapmask.log'):
@@ -94,7 +97,7 @@ def convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite, checkOrder):
         sample_id = maps.split('/')[len(maps.split('/'))-2]
         map_name = maps.split('/')[len(maps.split('/'))-1]
         if checkOrder:
-            get_axis_order(sample_id, map_name, maps)
+            get_axis_order(map_name, maps)
             break
         if sample_id not in sampleList:
             print('converting maps for {0!s}'.format(sample_id))
