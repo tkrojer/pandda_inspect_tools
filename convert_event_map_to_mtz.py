@@ -158,7 +158,7 @@ def main(argv):
             usage()
             sys.exit()
         elif opt in ("-p", "--panddadir"):
-            panddaDir = arg
+            panddaDir = os.path.abspath(arg)
         elif opt in ("-a", "--axis"):
             axisOrder = arg
         elif opt in ("-c", "--checkaxis"):
@@ -167,6 +167,7 @@ def main(argv):
             overwrite = True
 
     if os.path.isdir(panddaDir):
+        print('panddadir', panddaDir)
         convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite, checkOrder)
     else:
         print('ERROR: pandda directory does not exist -> {0!s}'.format(panddaDir))
