@@ -34,8 +34,6 @@ def get_axis_order(map_name, maps):
 
     print('running mapdump to get axis order for {0!s}'.format(map_name))
     
-    print('running with command:\n{0!s}'.format(cmd))
-
     os.system(cmd)
 
     if os.path.isfile('mapmask.log'):
@@ -135,7 +133,9 @@ def usage():
         '\n'
         'additional command line options:\n'
         '--axis, -a AXIS_ORDER\n'
-        '    changes axis order of input map as specified, e.g. -a zyx\n'
+        '    changes axis order of input map as specified, e.g. -a xyz\n'
+        '--checkaxis, -c\n'
+        '    reports axis order of input maps\n'
         '--overwrite, -o\n'
         '    flag to overwrite existing mtz files\n'
     )
