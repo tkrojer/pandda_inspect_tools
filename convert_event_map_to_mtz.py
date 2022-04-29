@@ -180,12 +180,11 @@ def main(argv):
     print('-> my dir: {0!s}'.format(mydir))
 
     if os.path.isdir(panddaDir) and os.path.isdir(mydir):
-        print('ERROR: pandda directory ({0!s}) and other directory ({1!s})exist'.format(panddaDir, mydir))
-        print('ERROR: please use either -p or -m option!')
-    elif os.path.isdir(panddaDir) or os.path.isfile(mydir):
+        convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder)
+    elif os.path.isdir(mydir):
         convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder)
     else:
-        print('ERROR: pandda directory does not exist {0!s}'.format(panddaDir))
+        print('ERROR: pandda directory or my directory does not exist')
 
 if __name__ == '__main__':
     main(sys.argv[1:])
