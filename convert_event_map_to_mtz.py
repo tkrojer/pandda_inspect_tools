@@ -87,10 +87,15 @@ def remove_temp_map(tmp_map_name):
     if os.path.isfile(tmp_map_name):
         os.remove(tmp_map_name)
 
-def convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite, checkOrder):
+def convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder):
     print('>>> looking for event maps in {0!s}'.format(panddaDir))
     sampleList = []
-    for maps in sorted(glob.glob(os.path.join(panddaDir, 'processed_datasets', '*', '*.ccp4'))):
+    if os.path.isdir(panddaDir):
+        glob_string = os.path.join(panddaDir, 'processed_datasets', '*', '*.ccp4')
+    else:
+        glob_string = os.path.join(mydir, '*', '*event*.ccp4')
+
+    for maps in sorted(glob.glob(glob_string)):
         tmp_map_name = None
         sample_id = maps.split('/')[len(maps.split('/'))-2]
         map_name = maps.split('/')[len(maps.split('/'))-1]
@@ -132,6 +137,8 @@ def usage():
         'ccp4-python convert_event_map_to_mtz.py -p /data/user/pandda\n'
         '\n'
         'additional command line options:\n'
+        '--mydir, -m DIRECTORY\n'
+        '    can be any directory with subfolders containing event maps\n'
         '--axis, -a AXIS_ORDER\n'
         '    changes axis order of input map as specified, e.g. -a xyz\n'
         '--checkaxis, -c\n'
@@ -142,13 +149,14 @@ def usage():
     print(usage)
 
 def main(argv):
-    panddaDir = None
+    panddaDir = ''
+    mydir = ''
     axisOrder = None
     checkOrder = False
     overwrite = False
 
     try:
-        opts, args = getopt.getopt(argv,"p:a:hoc",["panddadir=", "axis=", "overwrite", "checkaxis"])
+        opts, args = getopt.getopt(argv,"p:a:m:hoc",["panddadir=", "axis=", "mydir=", "overwrite", "checkaxis"])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -159,6 +167,8 @@ def main(argv):
             sys.exit()
         elif opt in ("-p", "--panddadir"):
             panddaDir = os.path.abspath(arg)
+        elif opt in ("-m", "--mydir"):
+            mydir = os.path.abspath(arg)
         elif opt in ("-a", "--axis"):
             axisOrder = arg
         elif opt in ("-c", "--checkaxis"):
@@ -166,9 +176,11 @@ def main(argv):
         elif opt in ("-o", "--overwrite"):
             overwrite = True
 
-    if os.path.isdir(panddaDir):
-        print('panddadir', panddaDir)
-        convert_event_maps_to_mtz(panddaDir, axisOrder, overwrite, checkOrder)
+    if os.path.isdir(panddaDir) and os.path.isdir(mydir):
+        print('ERROR: pandda directory ({0!s}) and other directory ({1!s})exist'.format(panddaDir, mydir))
+        print('ERROR: please use either -p or -m option!')
+    elif os.path.isdir(panddaDir) or os.path.isfile(mydir):
+        convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder)
     else:
         print('ERROR: pandda directory does not exist -> {0!s}'.format(panddaDir))
 
