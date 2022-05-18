@@ -604,7 +604,8 @@ class inspect_gui(object):
             self.load_emap()
             self.load_zmap()
             self.load_xraymap()
-            self.load_averagemap()
+            if self.averagemap:
+                self.load_averagemap()
         elif self.current_sample_matches_selection_criteria() and missing_files:
             print('INSPECT - ERROR: essential files could not be found, check messages above; skipping...')
             self.change_event(1)
