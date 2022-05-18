@@ -195,9 +195,9 @@ class inspect_gui(object):
         toggle_x_ray_maps_button = gtk.Button(label="(2)fofc maps")
         hbox.add(toggle_x_ray_maps_button)
         toggle_x_ray_maps_button.connect("clicked", self.toggle_x_ray_maps)
-        toggle_average_map_button = gtk.Button(label="average map")
-        hbox.add(toggle_average_map_button)
-        toggle_average_map_button.connect("clicked", self.toggle_average_map)
+        self.toggle_average_map_button = gtk.Button(label="average map")
+        hbox.add(self.toggle_average_map_button)
+        self.toggle_average_map_button.connect("clicked", self.toggle_average_map)
         frame.add(hbox)
         self.vbox.pack_start(frame)
 
@@ -426,21 +426,23 @@ class inspect_gui(object):
         __main__.toggle_display_map(self.mol_dict['xraymap'][1], self.show_xraymap)
         coot.set_last_map_colour(0, 0, 1)
 
-    def get_averagemap(self, missing_files):
+    def get_averagemap(self):
         averagemap = ''
         if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                                        '{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))):
             averagemap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                                       '{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))
             print('INSPECT - INFO: found average map: {0!s}'.format(averagemap))
+            self.toggle_average_map_button.set_sensitive(True)
         elif os.path.isfile(
                 os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-pandda-output.mtz'.format(self.xtal))):
             averagemap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-pandda-output.mtz'.format(self.xtal))
             print('INSPECT - INFO: found average map: {0!s}'.format(averagemap))
+            self.toggle_average_map_button.set_sensitive(True)
         else:
-            print('INSPECT - ERROR: did not find average map')
-            missing_files = True
-        return averagemap, missing_files
+            print('INSPECT - WARNING: did not find average map; disabling "average map" button')
+            self.toggle_average_map_button.set_sensitive(False)
+        return averagemap
 
     def load_averagemap(self):
         if self.new_pandda_output:
@@ -517,7 +519,7 @@ class inspect_gui(object):
         self.emap, self.new_pandda_output, missing_files = self.get_emap(missing_files)
         self.zmap, missing_files = self.get_zmap(missing_files)
         self.xraymap, missing_files = self.get_xraymap(missing_files)
-        self.averagemap, missing_files = self.get_averagemap(missing_files)
+        self.averagemap = self.get_averagemap()
         self.ligcif = self.get_ligcif()
         self.x = float(self.elist[self.index][self.x_index])
         self.y = float(self.elist[self.index][self.y_index])
