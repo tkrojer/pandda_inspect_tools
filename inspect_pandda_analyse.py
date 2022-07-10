@@ -359,6 +359,7 @@ class inspect_gui(object):
             emap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                                 '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))
             print('INSPECT - ERROR: cannot find event map {0!s}'.format(emap))
+            print('INSPECT - REMINDER: make sure that all CCP4 maps are converted into MTZ format!')
             missing_files = True
         print('INSPECT - INFO: new pandda file names: {0!s}'.format(new_pandda_output))
         return emap, new_pandda_output, missing_files
