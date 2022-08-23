@@ -176,15 +176,17 @@ def main(argv):
         elif opt in ("-o", "--overwrite"):
             overwrite = True
 
-    print('-> pandda dir: {0!s}'.format(panddaDir))
-    print('-> my dir: {0!s}'.format(mydir))
+#    print('-> pandda dir: {0!s}'.format(panddaDir))
+#    print('-> my dir: {0!s}'.format(mydir))
 
-    if os.path.isdir(panddaDir) and os.path.isdir(mydir):
+    if os.path.isdir(panddaDir) or os.path.isdir(mydir):
         convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder)
-    elif os.path.isdir(mydir):
-        convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder)
+#    elif os.path.isdir(mydir):
+#        convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder)
     else:
         print('ERROR: pandda directory or my directory does not exist')
+        print('       pandda directory: {0!s}'.format(panddaDir))
+        print('       my directory: {0!s}'.format(mydir))
 
 if __name__ == '__main__':
     main(sys.argv[1:])
