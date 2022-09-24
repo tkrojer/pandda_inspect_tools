@@ -671,8 +671,10 @@ class inspect_gui(object):
     def select_events(self, widget):
         self.selected_selection_criterion = self.select_events_combobox.get_active_text()
         if self.selected_selection_criterion.startswith("show all events - sort by cluster size"):
-            print('eifhuieghfrurgy')
+            header = self.elist[0]
+            del self.elist[0]
             self.elist = sorted(self.elist, key=lambda x: x[self.cluster_size_index])
+            self.elist.insert(0, header)
         print("INSPECT - INFO: you selected to {0!s}".format(self.selected_selection_criterion))
         self.index = -1
 
