@@ -58,6 +58,7 @@ class inspect_gui(object):
 
         self.selection_criteria = [
             'show all events',
+            'show all events - sort by cluster size',
             'show not viewed events',
             'show unassigned',
             'show no ligands bound',
@@ -545,7 +546,7 @@ class inspect_gui(object):
 
     def current_sample_matches_selection_criteria(self):
         show_event = False
-        if self.selected_selection_criterion == "show all events":
+        if self.selected_selection_criterion.startwith("show all events"):
             show_event = True
         elif self.selected_selection_criterion == "show no ligands bound":
             if "no ligand bound" in self.ligand_confidence:
@@ -669,6 +670,9 @@ class inspect_gui(object):
 
     def select_events(self, widget):
         self.selected_selection_criterion = self.select_events_combobox.get_active_text()
+        if self.selected_selection_criterion.startwith("show all events - sort by cluster size"):
+            self.elist = sorted(self.elist, key=lambda x: x[self.cluster_size_index])
+
         print("INSPECT - INFO: you selected to {0!s}".format(self.selected_selection_criterion))
         self.index = -1
 
@@ -769,6 +773,8 @@ class inspect_gui(object):
                 self.r_free_index = n
             if item == 'Viewed':
                 self.viewed_index = n
+            if item == 'cluster_size':
+                self.cluster_size_index = n
         self.show_content_of_event_csv_file()
 
     def show_content_of_event_csv_file(self):
