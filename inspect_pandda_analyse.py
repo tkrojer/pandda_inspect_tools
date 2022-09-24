@@ -546,7 +546,7 @@ class inspect_gui(object):
 
     def current_sample_matches_selection_criteria(self):
         show_event = False
-        if self.selected_selection_criterion.startwith("show all events"):
+        if self.selected_selection_criterion.startswith("show all events"):
             show_event = True
         elif self.selected_selection_criterion == "show no ligands bound":
             if "no ligand bound" in self.ligand_confidence:
