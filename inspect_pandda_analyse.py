@@ -749,6 +749,7 @@ class inspect_gui(object):
 
         print("INSPECT - INFO: getting header fields from {0!s}".format(self.eventCSV))
         for n, item in enumerate(self.elist[0]): # number of columns at the end can differ
+            print(item)
             if item == 'dtag':
                 self.xtal_index = n
             if item == 'Ligand Confidence':
