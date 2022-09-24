@@ -671,8 +671,8 @@ class inspect_gui(object):
     def select_events(self, widget):
         self.selected_selection_criterion = self.select_events_combobox.get_active_text()
         if self.selected_selection_criterion.startswith("show all events - sort by cluster size"):
+            print('eifhuieghfrurgy')
             self.elist = sorted(self.elist, key=lambda x: x[self.cluster_size_index])
-
         print("INSPECT - INFO: you selected to {0!s}".format(self.selected_selection_criterion))
         self.index = -1
 
@@ -749,7 +749,6 @@ class inspect_gui(object):
 
         print("INSPECT - INFO: getting header fields from {0!s}".format(self.eventCSV))
         for n, item in enumerate(self.elist[0]): # number of columns at the end can differ
-            print(item)
             if item == 'dtag':
                 self.xtal_index = n
             if item == 'Ligand Confidence':
