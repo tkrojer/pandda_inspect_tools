@@ -207,6 +207,7 @@ def export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, 
                     prepare_model(panddaDir, sample_id, ensembleOnly, overwrite)
             else:
                 print('--> exporting ALL available models')
+                prepare_model(panddaDir, sample_id, ensembleOnly, overwrite)
         else:
             ligand_confidence_list = get_info(inspect_csv, sample_id, ligand_confidence_index, str)
 
