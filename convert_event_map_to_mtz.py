@@ -90,20 +90,20 @@ def run_cinvfft(map_name, pandda_input_mtz, mtz_name):
     print('>> runnning cad...')
     if 'z_map' in map_name:
         cmd = (
-            'cad hklin1 tmp.mtz hklout {0!s} << eof 2> /dev/null\n'.format(mtz_name) +
+            'cad hklin1 tmp.mtz hklout {0!s} << eof > cad.log\n'.format(mtz_name) +
             'LABIN FILE_NUMBER 1 E1=tmp.F_phi.F E2=tmp.F_phi.phi\n'
             'LABOUT FILE_NUMBER 1 E1=DELFWT E2=PHDELWT\n'
             'eof'
         )
     else:
         cmd = (
-            'cad hklin1 tmp.mtz hklout {0!s} << eof 2> /dev/null\n'.format(mtz_name) +
+            'cad hklin1 tmp.mtz hklout {0!s} << eof > cad.log\n'.format(mtz_name) +
             'LABIN FILE_NUMBER 1 E1=tmp.F_phi.F E2=tmp.F_phi.phi\n'
             'LABOUT FILE_NUMBER 1 E1=FWT E2=PHWT\n'
             'eof'
         )
     os.system(cmd)
-    os.system('/bin/rm -f tmp.mtz cinvfft.log')
+    os.system('/bin/rm -f tmp.mtz cinvfft.log cad.log')
 
 
 def remove_temp_map(tmp_map_name):
