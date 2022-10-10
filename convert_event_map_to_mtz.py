@@ -75,7 +75,7 @@ def get_resolution(pandda_input_mtz):
     highres = m.resolution_high()
     return highres
 
-def run_gemmi_aap2sf(map_name, mtz_name,  dmin):
+def run_gemmi_map2sf(map_name, mtz_name,  dmin):
     print('>> runnning gemmi map2sf...')
     if 'z_map' in map_name:
         cmd = 'gemmi map2sf %s %s DELFWT PHDELWT --dmin=%s' % (map_name, mtz_name, dmin)
@@ -147,7 +147,7 @@ def convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder
         if cinvfft:
             run_cinvfft(map_name, pandda_input_mtz, mtz_name)
         else:
-            run_gemmi_aap2sf(map_name, mtz_name, dmin)
+            run_gemmi_map2sf(map_name, mtz_name, dmin)
         if tmp_map_name:
             remove_temp_map(tmp_map_name)
 
