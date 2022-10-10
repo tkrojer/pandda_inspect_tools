@@ -83,11 +83,34 @@ def run_gemmi_aap2sf(map_name, mtz_name,  dmin):
         cmd = 'gemmi map2sf %s %s FWT PHWT --dmin=%s' % (map_name, mtz_name, dmin)
     os.system(cmd)
 
+def run_cinvfft(map_name, pandda_input_mtz, mtz_name):
+    print('>> runnning cinvfft...')
+    cmd = 'cinvfft -mapin {0!s} -mtzin {1!s} -mtzout tmp.mtz -colout tmp'.format(map_name, pandda_input_mtz)
+    os.system(cmd)
+    print('>> runnning cad...')
+    if 'z_map' in map_name:
+        cmd = (
+            'cad hklin1 tmp.mtz hklout {0!s} << eof 2> /dev/null\n'.format(mtz_name) +
+            'LABIN FILE_NUMBER 1 E1=tmp.F_phi.F E2=tmp.F_phi.phi\n'
+            'LABOUT FILE_NUMBER 1 E1=DELFWT E2=PHDELWT\n'
+            'eof'
+        )
+    else:
+        cmd = (
+            'cad hklin1 tmp.mtz hklout {0!s} << eof 2> /dev/null\n'.format(mtz_name) +
+            'LABIN FILE_NUMBER 1 E1=tmp.F_phi.F E2=tmp.F_phi.phi\n'
+            'LABOUT FILE_NUMBER 1 E1=FWT E2=PHWT\n'
+            'eof'
+        )
+    os.system(cmd)
+    os.system('/bin/rm tmp.mtz')
+
+
 def remove_temp_map(tmp_map_name):
     if os.path.isfile(tmp_map_name):
         os.remove(tmp_map_name)
 
-def convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder):
+def convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder, cinvfft):
     print('>>> looking for event maps in {0!s}'.format(panddaDir))
     sampleList = []
     if os.path.isdir(panddaDir):
@@ -121,7 +144,10 @@ def convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder
         if axisOrder:
             tmp_map_name = map_name.replace('.ccp4', '_tmp.ccp4')
             map_name = change_axis_order(map_name, tmp_map_name, axisOrder)
-        run_gemmi_aap2sf(map_name, mtz_name, dmin)
+        if cinvfft:
+            run_cinvfft(map_name, pandda_input_mtz, mtz_name)
+        else:
+            run_gemmi_aap2sf(map_name, mtz_name, dmin)
         if tmp_map_name:
             remove_temp_map(tmp_map_name)
 
@@ -145,6 +171,8 @@ def usage():
         '    reports axis order of input maps\n'
         '--overwrite, -o\n'
         '    flag to overwrite existing mtz files\n'
+        '--cinvfft, -n\n'
+        '    use cinvfft for map to mtz conversion instead of gemmi\n'
     )
     print(usage)
 
@@ -154,9 +182,11 @@ def main(argv):
     axisOrder = None
     checkOrder = False
     overwrite = False
+    cinvfft = False
 
     try:
-        opts, args = getopt.getopt(argv,"p:a:m:hoc",["panddadir=", "axis=", "mydir=", "overwrite", "checkaxis"])
+        opts, args = getopt.getopt(argv,"p:a:m:hocn",["panddadir=", "axis=", "mydir=",
+                                                      "overwrite", "checkaxis", "cinvfft"])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -175,12 +205,14 @@ def main(argv):
             checkOrder = True
         elif opt in ("-o", "--overwrite"):
             overwrite = True
+        elif opt in ("-n", "--cinvfft"):
+            cinvfft = True
 
 #    print('-> pandda dir: {0!s}'.format(panddaDir))
 #    print('-> my dir: {0!s}'.format(mydir))
 
     if os.path.isdir(panddaDir) or os.path.isdir(mydir):
-        convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder)
+        convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder, cinvfft)
 #    elif os.path.isdir(mydir):
 #        convert_event_maps_to_mtz(panddaDir, mydir, axisOrder, overwrite, checkOrder)
     else:
