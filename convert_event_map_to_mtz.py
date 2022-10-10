@@ -85,7 +85,7 @@ def run_gemmi_map2sf(map_name, mtz_name,  dmin):
 
 def run_cinvfft(map_name, pandda_input_mtz, mtz_name):
     print('>> runnning cinvfft...')
-    cmd = 'cinvfft -mapin {0!s} -mtzin {1!s} -mtzout tmp.mtz -colout tmp 2> /dev/null'.format(map_name, pandda_input_mtz)
+    cmd = 'cinvfft -mapin {0!s} -mtzin {1!s} -mtzout tmp.mtz -colout tmp > cinvfft.log'.format(map_name, pandda_input_mtz)
     os.system(cmd)
     print('>> runnning cad...')
     if 'z_map' in map_name:
@@ -103,7 +103,7 @@ def run_cinvfft(map_name, pandda_input_mtz, mtz_name):
             'eof'
         )
     os.system(cmd)
-    os.system('/bin/rm tmp.mtz')
+    os.system('/bin/rm -f tmp.mtz cinvfft.log')
 
 
 def remove_temp_map(tmp_map_name):
