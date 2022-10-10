@@ -84,10 +84,10 @@ def run_gemmi_map2sf(map_name, mtz_name,  dmin):
     os.system(cmd)
 
 def run_cinvfft(map_name, pandda_input_mtz, mtz_name):
-    print('>> runnning cinvfft...')
+    print('>> running cinvfft...')
     cmd = 'cinvfft -mapin {0!s} -mtzin {1!s} -mtzout tmp.mtz -colout tmp > cinvfft.log'.format(map_name, pandda_input_mtz)
     os.system(cmd)
-    print('>> runnning cad...')
+    print('>> running cad...')
     if 'z_map' in map_name:
         cmd = (
             'cad hklin1 tmp.mtz hklout {0!s} << eof > cad.log\n'.format(mtz_name) +
