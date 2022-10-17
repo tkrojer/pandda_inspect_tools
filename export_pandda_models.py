@@ -167,23 +167,30 @@ def linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensem
         else:
             print('preparing links for {0!s}'.format(sample_id))
             if os.path.isfile(model):
-                os.system('ln -s {0!s} pandda-model.pdb'.format(os.path.relpath(model)))
+#                os.system('ln -s {0!s} pandda-model.pdb'.format(os.path.relpath(model)))
+                os.system('/bin/cp {0!s} pandda-model.pdb'.format(os.path.relpath(model)))
         if os.path.isfile(os.path.join(panddaDir, 'processed_datasets',
                                        sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id))):
-                os.system('ln -s {0!s} ground-state-average-map.native.mtz'.format(
-                    os.path.relpath(os.path.join(
+            os.system('/bin/cp {0!s} ground-state-average-map.native.mtz'.format(os.path.join(
                         panddaDir, 'processed_datasets',
-                        sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id)))))
+                        sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id))))
+#                os.system('ln -s {0!s} ground-state-average-map.native.mtz'.format(
+#                    os.path.relpath(os.path.join(
+#                        panddaDir, 'processed_datasets',
+#                        sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id)))))
         if os.path.isfile(os.path.join(panddaDir, 'processed_datasets',
                                        sample_id, "{0!s}-z_map.native.mtz".format(sample_id))):
-                os.system('ln -s {0!s} z_map.native.mtz'.format(
-                    os.path.relpath(os.path.join(panddaDir, 'processed_datasets',
-                                                 sample_id, "{0!s}-z_map.native.mtz".format(sample_id)))))
+            os.system('/bin/cp {0!s} z_map.native.mtz'.format(os.path.join(panddaDir, 'processed_datasets',
+                                                 sample_id, "{0!s}-z_map.native.mtz".format(sample_id))))
+#                os.system('ln -s {0!s} z_map.native.mtz'.format(
+#                    os.path.relpath(os.path.join(panddaDir, 'processed_datasets',
+#                                                 sample_id, "{0!s}-z_map.native.mtz".format(sample_id)))))
         for event in glob.glob(os.path.join(panddaDir, 'processed_datasets',
                                             sample_id, "{0!s}-event_*_map.native.mtz".format(sample_id))):
             filename = event[event.rfind('/')+1:]
             new_filename = filename.replace(sample_id + '-', '')
-            os.system('ln -s {0!s} {1!s}'.format(event, new_filename))
+#            os.system('ln -s {0!s} {1!s}'.format(event, new_filename))
+            os.system('/bin/cp {0!s} {1!s}'.format(event, new_filename))
 
 
 def export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, lowconfidenceOnly, ensembleOnly, overwrite):
