@@ -169,6 +169,9 @@ def linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensem
             if os.path.isfile(model):
 #                os.system('ln -s {0!s} pandda-model.pdb'.format(os.path.relpath(model)))
                 os.system('/bin/cp {0!s} pandda-model.pdb'.format(os.path.relpath(model)))
+            if os.path.isfile(os.path.join(panddaDir, 'processed_datasets', sample_id, sample_id + '-pandda-input.mtz')):
+                os.system('/bin/cp {0!s} pandda-model.mtz'.format(
+                    os.path.join(panddaDir, 'processed_datasets', sample_id, sample_id + '-pandda-input.mtz')))
         if os.path.isfile(os.path.join(panddaDir, 'processed_datasets',
                                        sample_id, "{0!s}-ground-state-average-map.native.mtz".format(sample_id))):
             os.system('/bin/cp {0!s} ground-state-average-map.native.mtz'.format(os.path.join(
@@ -191,7 +194,10 @@ def linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensem
             new_filename = filename.replace(sample_id + '-', '')
 #            os.system('ln -s {0!s} {1!s}'.format(event, new_filename))
             os.system('/bin/cp {0!s} {1!s}'.format(event, new_filename))
-
+        if os.path.isdir(os.path.join(panddaDir, 'processed_datasets',
+                                       sample_id, "ligand_files".format(sample_id))):
+            os.system('/bin/cp -R {0!s} .'.format(os.path.join(panddaDir, 'processed_datasets',
+                                       sample_id, "ligand_files".format(sample_id))))
 
 def export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, lowconfidenceOnly, ensembleOnly, overwrite):
     inspect_csv = read_inspect_event_csv_as_list(panddaDir)
