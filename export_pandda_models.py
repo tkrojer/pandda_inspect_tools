@@ -165,6 +165,7 @@ def linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensem
                 os.system('ln -s {0!s}'.format(os.path.relpath(
                     os.path.join(panddaDir, 'processed_datasets', sample_id, 'multi-state-restraints.phenix.params'))))
         else:
+            print('preparing links for {0!s}'.format(sample_id))
             if os.path.isfile(model):
                 os.system('ln -s {0!s} pandda-model.pdb'.format(os.path.relpath(model)))
         if os.path.isfile(os.path.join(panddaDir, 'processed_datasets',
