@@ -205,9 +205,13 @@ def export_pandda_models(panddaDir, destinationDir, export, highconfidenceOnly, 
                 print('--> exporting low confidence models only')
                 if "low confidence" in ligand_confidence_list and not "high confidence" in ligand_confidence_list:
                     prepare_model(panddaDir, sample_id, ensembleOnly, overwrite)
+                    prepare_destination_dir(destinationDir, sample_id, overwrite)
+                    linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensembleOnly, str, overwrite)
             else:
                 print('--> exporting ALL available models')
                 prepare_model(panddaDir, sample_id, ensembleOnly, overwrite)
+                prepare_destination_dir(destinationDir, sample_id, overwrite)
+                linking_files_to_destination_dir(destinationDir, sample_id, panddaDir, ensembleOnly, str, overwrite)
         else:
             ligand_confidence_list = get_info(inspect_csv, sample_id, ligand_confidence_index, str)
 

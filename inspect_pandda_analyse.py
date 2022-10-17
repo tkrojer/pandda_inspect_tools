@@ -428,7 +428,7 @@ class inspect_gui(object):
         coot.set_colour_map_rotation_on_read_pdb(0)
         __main__.toggle_display_map(self.mol_dict['xraymap'][0], self.show_xraymap)
         __main__.toggle_display_map(self.mol_dict['xraymap'][1], self.show_xraymap)
-        coot.set_last_map_colour(0, 0, 1)
+#        coot.set_last_map_colour(0, 0, 1)
 
     def get_averagemap(self):
         averagemap = ''
@@ -666,7 +666,8 @@ class inspect_gui(object):
         if os.name == 'nt':
             os.popen('copy {0!s} {1!s}-pandda-model.pdb'.format(new, self.xtal))
         else:
-            os.symlink(new, '{0!s}-pandda-model.pdb'.format(self.xtal))
+            os.system('/bin/cp {0!s} {1!s}-pandda-model.pdb'.format(new, self.xtal))
+#            os.symlink(new, '{0!s}-pandda-model.pdb'.format(self.xtal))
 
     def select_events(self, widget):
         self.selected_selection_criterion = self.select_events_combobox.get_active_text()
