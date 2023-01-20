@@ -378,9 +378,9 @@ class inspect_gui(object):
         # event map contour level:
         # if you divide it by (1-bdc) you get the contour level in RMSD.
         # for 1-bdc = 0.3, then contouring at 0.3 is 1 RMSD, 0.6 is 2 RMSD, etc.
-        # note self.bdc is actually 1-bdc
+        # note self.bdc is actually 1-bdc; however, that seems far too low in practice
         # emap_level = 1.0 - float(self.bdc)
-        coot.set_contour_level_in_sigma(self.mol_dict['emap'], float(self.bdc)*2)
+        coot.set_contour_level_in_sigma(self.mol_dict['emap'], 1.0 - float(self.bdc))
 
     def get_zmap(self, missing_files):
         zmap = ''
