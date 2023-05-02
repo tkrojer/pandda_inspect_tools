@@ -16,16 +16,15 @@ def get_ligands_in_structure(pdb, allowed_ligand_ids):
                     lig_dict[lig_name] = c
     return lig_dict
 
-
 def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
     event_df = pd.read_csv(pandda_csv)
     event_df['ligand_id'] = ""
     event_df['ligand_event_distance'] = ""
     for index, row in event_df.iterrows():
         sample_id = row['dtag']
-        print(sample_id)
-#        event_idx = row['event_idx']
-#        site_idx = row['site_idx']
+        event_idx = row['event_idx']
+        site_idx = row['site_idx']
+        print('sample_id: {0!s} - event_idx: {1!s} - site_idx: {2!s}'.format(sample_id, event_idx, site_idx))
         x_event = float(row['x'])
         y_event = float(row['y'])
         z_event = float(row['z'])
@@ -34,12 +33,10 @@ def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
         pdb = os.path.join(pandda_dir, 'processed_datasets', sample_id, 'modelled_structures',
                            sample_id + '-pandda-model.pdb')
         if os.path.isfile(pdb):
-#            print(pdb)
+            print('found pdb file')
             lig_dict = get_ligands_in_structure(pdb, allowed_ligand_ids)
             if lig_dict:
                 for ligand in lig_dict:
-                    print(ligand)
-#                    c = lig_dict[ligand][0]
                     c = lig_dict[ligand]
                     position_ligand = c.calculate_center_of_mass()
                     event_ligand_distance = position_event.dist(position_ligand)
@@ -49,8 +46,9 @@ def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
                     ligand_event_distance = min(lig_dist_list, key=lambda x: x[1])[1]
                     event_df.at[index, 'ligand_id'] =ligand_id_close_to_event
                     event_df.at[index, 'ligand_event_distance'] =ligand_event_distance
+                    print('closest distance of ligand {0!s} to event is {1!s}'.format(ligand_id_close_to_event,
+                                                                                      ligand_event_distance))
     event_df.to_csv('pandda_analyse_events_with_ligand_ids.csv')
-
 
 if __name__ == '__main__':
     allowed_ligand_ids = ['LIG, DRG', '188']
