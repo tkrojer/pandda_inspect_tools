@@ -33,6 +33,7 @@ def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
         position_event = gemmi.Position(x_event, y_event, z_event)
         lig_dist_list = []
         pdb = os.path.join(pandda_dir, 'processed_datasets', sample_id, sample_id + '-pandda-model.pdb')
+        print(pdb)
         if os.path.isfile(pdb):
             print('here')
             lig_dict = get_ligands_in_structure(pdb, allowed_ligand_ids)
