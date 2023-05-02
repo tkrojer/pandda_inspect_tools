@@ -10,7 +10,6 @@ def get_ligands_in_structure(pdb, allowed_ligand_ids):
         for chain in model:
             for residue in chain:
                 if residue.name in allowed_ligand_ids:
-                    print('feofgr')
                     c = gemmi.Chain(chain.name)
                     c.add_residue(residue, 0)
                     lig_name = str(residue.name)+'-'+str(chain.name)+'-'+ str(residue.seqid.num)
@@ -53,7 +52,7 @@ def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
 
 
 if __name__ == '__main__':
-    allowed_ligand_ids = ['LIG, DRG', '801']
+    allowed_ligand_ids = ['LIG, DRG', '188']
     pandda_dir = sys.argv[1]
     pandda_csv = os.path.join(pandda_dir, 'analyses', 'pandda_analyse_events.csv')
     parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids)
