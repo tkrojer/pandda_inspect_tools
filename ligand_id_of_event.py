@@ -9,7 +9,6 @@ def get_ligands_in_structure(pdb, allowed_ligand_ids):
     for model in structure:
         for chain in model:
             for residue in chain:
-                print(residue.name)
                 if residue.name in allowed_ligand_ids:
                     c = gemmi.Chain(chain.name)
                     c.add_residue(residue, 0)
@@ -34,9 +33,8 @@ def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
         lig_dist_list = []
         pdb = os.path.join(pandda_dir, 'processed_datasets', sample_id, 'modelled_structures',
                            sample_id + '-pandda-model.pdb')
-        print(pdb)
         if os.path.isfile(pdb):
-            print('here')
+            print(pdb)
             lig_dict = get_ligands_in_structure(pdb, allowed_ligand_ids)
             if lig_dict:
                 for ligand in lig_dict:
