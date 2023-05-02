@@ -34,6 +34,7 @@ def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
         lig_dist_list = []
         pdb = os.path.join(pandda_dir, 'processed_datasets', sample_id, sample_id + '-pandda-model.pdb')
         if os.path.isfile(pdb):
+            print('here')
             lig_dict = get_ligands_in_structure(pdb, allowed_ligand_ids)
             if lig_dict:
                 for ligand in lig_dict:
