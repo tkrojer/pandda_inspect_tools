@@ -42,7 +42,6 @@ def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
                     event_ligand_distance = position_event.dist(position_ligand)
                     lig_dist_list.append([ligand, event_ligand_distance])
                 if lig_dist_list:
-                    print(lig_dist_list)
                     ligand_id_close_to_event = min(lig_dist_list, key=lambda x: x[1])[0]
                     ligand_event_distance = min(lig_dist_list, key=lambda x: x[1])[1]
                     event_df.at[index, 'ligand_id'] =ligand_id_close_to_event
@@ -52,7 +51,7 @@ def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
     event_df.to_csv('pandda_analyse_events_with_ligand_ids.csv')
 
 if __name__ == '__main__':
-    allowed_ligand_ids = ['LIG, DRG', '188']
+    allowed_ligand_ids = ['LIG, DRG']
     pandda_dir = sys.argv[1]
     pandda_csv = os.path.join(pandda_dir, 'analyses', 'pandda_analyse_events.csv')
     parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids)
