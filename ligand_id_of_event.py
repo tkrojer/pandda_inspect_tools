@@ -32,7 +32,8 @@ def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
         z_event = float(row['z'])
         position_event = gemmi.Position(x_event, y_event, z_event)
         lig_dist_list = []
-        pdb = os.path.join(pandda_dir, 'processed_datasets', sample_id, sample_id + '-pandda-model.pdb')
+        pdb = os.path.join(pandda_dir, 'processed_datasets', sample_id, 'modelled_structures',
+                           sample_id + '-pandda-model.pdb')
         print(pdb)
         if os.path.isfile(pdb):
             print('here')
