@@ -39,7 +39,8 @@ def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
             if lig_dict:
                 for ligand in lig_dict:
                     print(ligand)
-                    c = lig_dict[ligand][0]
+#                    c = lig_dict[ligand][0]
+                    c = lig_dict[ligand]
                     position_ligand = c.calculate_center_of_mass()
                     event_ligand_distance = position_event.dist(position_ligand)
                     lig_dist_list.append([ligand, event_ligand_distance])
