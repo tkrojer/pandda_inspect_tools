@@ -23,6 +23,7 @@ def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
     event_df['ligand_event_distance'] = ""
     for index, row in event_df.iterrows():
         sample_id = row['dtag']
+        print(sample_id)
 #        event_idx = row['event_idx']
 #        site_idx = row['site_idx']
         x_event = float(row['x'])
@@ -35,6 +36,7 @@ def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
             lig_dict = get_ligands_in_structure(pdb, allowed_ligand_ids)
             if lig_dict:
                 for ligand in lig_dict:
+                    print(ligand)
                     c = ligDict[ligand][0]
                     position_ligand = c.calculate_center_of_mass()
                     event_ligand_distance = position_event.dist(position_ligand)
