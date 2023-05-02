@@ -52,7 +52,7 @@ def parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids):
 
 
 if __name__ == '__main__':
-    allowed_ligand_ids = ['LIG, DRG']
+    allowed_ligand_ids = ['LIG, DRG', '801']
     pandda_dir = sys.argv[1]
     pandda_csv = os.path.join(pandda_dir, 'analyses', 'pandda_analyse_events.csv')
     parse_pandda_analyse_events_csv(pandda_csv, pandda_dir, allowed_ligand_ids)
