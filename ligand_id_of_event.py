@@ -10,6 +10,7 @@ def get_ligands_in_structure(pdb, allowed_ligand_ids):
         for chain in model:
             for residue in chain:
                 if residue.name in allowed_ligand_ids:
+                    print('feofgr')
                     c = gemmi.Chain(chain.name)
                     c.add_residue(residue, 0)
                     lig_name = str(residue.name)+'-'+str(chain.name)+'-'+ str(residue.seqid.num)
