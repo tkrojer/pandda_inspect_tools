@@ -9,6 +9,7 @@ def get_ligands_in_structure(pdb, allowed_ligand_ids):
     for model in structure:
         for chain in model:
             for residue in chain:
+                print(residue.name)
                 if residue.name in allowed_ligand_ids:
                     c = gemmi.Chain(chain.name)
                     c.add_residue(residue, 0)
