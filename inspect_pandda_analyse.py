@@ -370,8 +370,10 @@ class inspect_gui(object):
             imol = coot.map_from_mtz_by_calc_phases(self.emap, "FEVENT", "PHEVENT", self.mol_dict['protein'])
             self.mol_dict['emap'] = imol
         else:
-            imol = coot.auto_read_make_and_draw_maps(self.emap)
-            self.mol_dict['emap'] = imol[0]
+#            imol = coot.auto_read_make_and_draw_maps(self.emap)
+#            self.mol_dict['emap'] = imol[0]
+            imol = coot.map_from_mtz_by_calc_phases(self.emap, "FWT", "PHWT", self.mol_dict['protein'])
+            self.mol_dict['emap'] = imol
         coot.set_colour_map_rotation_on_read_pdb(0)
         coot.set_last_map_colour(0, 0, 1)
         self.show_emap = 1
@@ -404,9 +406,12 @@ class inspect_gui(object):
             self.mol_dict['zmap'] = imol
             coot.set_map_is_difference_map(imol, True)
         else:
-            imol = coot.auto_read_make_and_draw_maps(self.zmap)
-            self.mol_dict['zmap'] = imol[0]
-            coot.set_contour_level_in_sigma(self.mol_dict['zmap'], 3)
+#            imol = coot.auto_read_make_and_draw_maps(self.zmap)
+#            self.mol_dict['zmap'] = imol[0]
+#            coot.set_contour_level_in_sigma(self.mol_dict['zmap'], 3)
+            imol = coot.map_from_mtz_by_calc_phases(self.zmap, "DELWT", "PHDELWT", self.mol_dict['protein'])
+            self.mol_dict['zmap'] = imol
+            coot.set_map_is_difference_map(imol, True)
 #        coot.set_contour_level_in_sigma(imol[0], 3)
         self.show_zmap = 1
 
@@ -453,8 +458,10 @@ class inspect_gui(object):
             imol = coot.map_from_mtz_by_calc_phases(self.zmap, "FGROUND", "PHGROUND", self.mol_dict['protein'])
             self.mol_dict['averagemap'] = imol
         else:
-            imol = coot.auto_read_make_and_draw_maps(self.averagemap)
-            self.mol_dict['averagemap'] = imol[0]
+#            imol = coot.auto_read_make_and_draw_maps(self.averagemap)
+#            self.mol_dict['averagemap'] = imol[0]
+            imol = coot.map_from_mtz_by_calc_phases(self.zmap, "FWT", "PHWT", self.mol_dict['protein'])
+            self.mol_dict['averagemap'] = imol
         coot.set_colour_map_rotation_on_read_pdb(0)
         __main__.toggle_display_map(self.mol_dict['averagemap'], self.show_averagemap)
         coot.set_last_map_colour(0, 0, 1)
