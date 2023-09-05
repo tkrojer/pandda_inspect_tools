@@ -617,6 +617,9 @@ class inspect_gui(object):
             self.load_xraymap()
             if self.averagemap:
                 self.load_averagemap()
+            print('INSPECT - INFO: setting event map as RSR map')
+            coot.set_imol_refinement_map(self.mol_dict['emap'])
+
         elif self.current_sample_matches_selection_criteria() and missing_files:
             print('INSPECT - ERROR: essential files could not be found, check messages above; skipping...')
             self.change_event(1)
