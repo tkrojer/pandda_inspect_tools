@@ -370,8 +370,10 @@ class inspect_gui(object):
             imol = coot.map_from_mtz_by_calc_phases(self.emap, "FEVENT", "PHEVENT", self.mol_dict['protein'])
             self.mol_dict['emap'] = imol
         else:
+            # loads double-maps
 #            imol = coot.auto_read_make_and_draw_maps(self.emap)
 #            self.mol_dict['emap'] = imol[0]
+            # may cause core dump
             imol = coot.map_from_mtz_by_calc_phases(self.emap, "FWT", "PHWT", self.mol_dict['protein'])
             self.mol_dict['emap'] = imol
         coot.set_colour_map_rotation_on_read_pdb(0)
@@ -406,9 +408,11 @@ class inspect_gui(object):
             self.mol_dict['zmap'] = imol
             coot.set_map_is_difference_map(imol, True)
         else:
+            # load double-maps
 #            imol = coot.auto_read_make_and_draw_maps(self.zmap)
 #            self.mol_dict['zmap'] = imol[0]
 #            coot.set_contour_level_in_sigma(self.mol_dict['zmap'], 3)
+            # may cause core dump
             imol = coot.map_from_mtz_by_calc_phases(self.zmap, "DELWT", "PHDELWT", self.mol_dict['protein'])
             self.mol_dict['zmap'] = imol
             coot.set_map_is_difference_map(imol, True)
@@ -458,8 +462,10 @@ class inspect_gui(object):
             imol = coot.map_from_mtz_by_calc_phases(self.zmap, "FGROUND", "PHGROUND", self.mol_dict['protein'])
             self.mol_dict['averagemap'] = imol
         else:
+            # loads double-maps
 #            imol = coot.auto_read_make_and_draw_maps(self.averagemap)
 #            self.mol_dict['averagemap'] = imol[0]
+            # may case core-dump
             imol = coot.map_from_mtz_by_calc_phases(self.zmap, "FWT", "PHWT", self.mol_dict['protein'])
             self.mol_dict['averagemap'] = imol
         coot.set_colour_map_rotation_on_read_pdb(0)
