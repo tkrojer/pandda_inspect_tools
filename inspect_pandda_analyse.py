@@ -404,7 +404,8 @@ class inspect_gui(object):
     def load_zmap(self):
         coot.set_default_initial_contour_level_for_difference_map(3)
         if self.new_pandda_output:
-            imol = coot.map_from_mtz_by_calc_phases(self.zmap, "FZVALUES", "PHZVALUES", self.mol_dict['protein'])
+#            imol = coot.map_from_mtz_by_calc_phases(self.zmap, "FZVALUES", "PHZVALUES", self.mol_dict['protein'])
+            imol = coot.make_and_draw_map(self.zmap, "FZVALUES", "PHZVALUES", "1", 0, 1)
             self.mol_dict['zmap'] = imol
             coot.set_map_is_difference_map(imol, True)
         else:
