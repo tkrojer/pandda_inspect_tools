@@ -367,7 +367,8 @@ class inspect_gui(object):
 
     def load_emap(self):
         if self.new_pandda_output:
-            imol = coot.map_from_mtz_by_calc_phases(self.emap, "FEVENT", "PHEVENT", self.mol_dict['protein'])
+#            imol = coot.map_from_mtz_by_calc_phases(self.emap, "FEVENT", "PHEVENT", self.mol_dict['protein'])
+            imol = coot.make_and_draw_map(self.emap, "FEVENT", "PHEVENT", "1", 0, 0)
             self.mol_dict['emap'] = imol
         else:
             # loads double-maps
@@ -460,7 +461,8 @@ class inspect_gui(object):
 
     def load_averagemap(self):
         if self.new_pandda_output:
-            imol = coot.map_from_mtz_by_calc_phases(self.zmap, "FGROUND", "PHGROUND", self.mol_dict['protein'])
+#            imol = coot.map_from_mtz_by_calc_phases(self.zmap, "FGROUND", "PHGROUND", self.mol_dict['protein'])
+            imol = coot.make_and_draw_map(self.zmap, "FGROUND", "PHGROUND", "1", 0, 0)
             self.mol_dict['averagemap'] = imol
         else:
             # loads double-maps
