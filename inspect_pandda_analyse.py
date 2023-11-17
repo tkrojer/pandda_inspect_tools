@@ -183,6 +183,8 @@ class inspect_gui(object):
         next_site_button.connect("clicked", self.next_site)
         hbox.pack_start(next_site_button)
         vbox.add(hbox)
+        self.crystal_progressbar = gtk.ProgressBar()
+        vbox.add(self.crystal_progressbar)
         frame.add(vbox)
         self.vbox.add(frame)
 
@@ -691,6 +693,7 @@ class inspect_gui(object):
 
     def select_events(self, widget):
         self.selected_selection_criterion = self.select_events_combobox.get_active_text()
+        self.crystal_progressbar.set_fraction(0)
         if self.selected_selection_criterion.startswith("show all events - sort by cluster size"):
             header = self.elist[0]
             del self.elist[0]
@@ -730,6 +733,7 @@ class inspect_gui(object):
 
     def change_event(self, n):
         self.index += n
+        self.crystal_progressbar.set_fraction(float(self.index) / float(len(self.elist)))
         self.RefreshData()
 
 
