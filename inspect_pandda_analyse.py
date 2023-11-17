@@ -59,6 +59,7 @@ class inspect_gui(object):
         self.selection_criteria = [
             'show all events',
             'show all events - sort by cluster size',
+            'show all events - sort alphabetically',
             'show not viewed events',
             'show unassigned',
             'show no ligands bound',
@@ -694,6 +695,12 @@ class inspect_gui(object):
             header = self.elist[0]
             del self.elist[0]
             self.elist = sorted(self.elist, key=lambda x: x[self.cluster_size_index])
+            self.elist.insert(0, header)
+        elif self.selected_selection_criterion.startswith("show all events - sort alphabetically"):
+            print("INSPECT - INFO: sorting event alphabetically")
+            header = self.elist[0]
+            del self.elist[0]
+            self.elist = sorted(self.elist, key=lambda x: x[self.xtal_index])
             self.elist.insert(0, header)
         print("INSPECT - INFO: you selected to {0!s}".format(self.selected_selection_criterion))
         self.index = -1
