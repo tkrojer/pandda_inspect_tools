@@ -728,14 +728,17 @@ class inspect_gui(object):
 
     def next_event(self, widget):
         self.save_event_as_viewed()
-#        self.elist[self.index][self.ligand_confidence_index] = data
         for n, b in enumerate(self.ligand_confidence_button_list):
-            print('--------------------------------------------------------------')
-            print(n)
-            print(b.get_active())
-#            print(dir(b))
-            print("==============================================================")
-#        self.save_pandda_inspect_events_csv_file()
+            if b.get_active:
+                for c in self.ligand_confidence_button_labels:
+                    nc = c[0]
+                    co = c[1]
+                    if nc == n:
+                        self.elist[self.index][self.ligand_confidence_index] = co
+                        print("INSPECT - INFO: saving ligand confidence for event as '{0!s}'".format(co))
+                        self.save_pandda_inspect_events_csv_file()
+                        break
+                break
         self.change_event(1)
 
     def previous_site(self, widget):
