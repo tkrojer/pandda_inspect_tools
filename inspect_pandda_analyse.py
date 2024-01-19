@@ -263,10 +263,8 @@ class inspect_gui(object):
             writer.writerows(self.elist)
 
     def set_ligand_confidence(self, widget, data=None):
-        for n, b in enumerate(self.ligand_confidence_button_list):
-            print("***********",n,b.get_active())
-
-
+#        for n, b in enumerate(self.ligand_confidence_button_list):
+#            print("***********",n,b.get_active())
         if widget.get_active():
             self.elist[self.index][self.ligand_confidence_index] = data
             self.save_pandda_inspect_events_csv_file()
@@ -733,8 +731,8 @@ class inspect_gui(object):
     def next_event(self, widget):
         self.save_event_as_viewed()
         for n, b in enumerate(self.ligand_confidence_button_list):
-            print('===>', n, b.get_active)
-            if b.get_active:
+            print('===>', n, b.get_active())
+            if b.get_active():
                 for c in self.ligand_confidence_button_labels:
                     nc = c[0]
                     co = c[1]
@@ -744,7 +742,7 @@ class inspect_gui(object):
                         print("INSPECT - INFO: saving ligand confidence for event as '{0!s}'".format(co))
                         self.save_pandda_inspect_events_csv_file()
                         break
-#                break
+                break
         self.change_event(1)
 
     def previous_site(self, widget):
