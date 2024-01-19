@@ -49,12 +49,21 @@ class inspect_gui(object):
         self.reset_params()
         self.merged = False
 
+#        self.ligand_confidence_button_labels = [
+#            [0, 'unassigned'],
+#            [1, 'no ligand bound'],
+#            [2, 'unknown ligand'],
+#            [3, 'low confidence'],
+#            [4, 'high confidence']
+#        ]
+
         self.ligand_confidence_button_labels = [
             [0, 'unassigned'],
             [1, 'no ligand bound'],
             [2, 'unknown ligand'],
-            [3, 'low confidence'],
-            [4, 'high confidence']
+            [3, 'ambiguous density'],
+            [4, 'event map only'],
+            [5, '2fofc map']
         ]
 
         self.selection_criteria = [
@@ -719,6 +728,8 @@ class inspect_gui(object):
 
     def next_event(self, widget):
         self.save_event_as_viewed()
+        self.elist[self.index][self.ligand_confidence_index] = data
+        self.save_pandda_inspect_events_csv_file()
         self.change_event(1)
 
     def previous_site(self, widget):
