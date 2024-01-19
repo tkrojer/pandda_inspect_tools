@@ -264,7 +264,7 @@ class inspect_gui(object):
 
     def set_ligand_confidence(self, widget, data=None):
         for n, b in enumerate(self.ligand_confidence_button_list):
-            print("***********",n,b.get_active)
+            print("***********",n,b.get_active())
 
 
         if widget.get_active():
