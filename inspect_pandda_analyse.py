@@ -729,6 +729,7 @@ class inspect_gui(object):
     def next_event(self, widget):
         self.save_event_as_viewed()
         for n, b in enumerate(self.ligand_confidence_button_list):
+            print('===>', n, b.get_active)
             if b.get_active:
                 for c in self.ligand_confidence_button_labels:
                     nc = c[0]
