@@ -47,6 +47,7 @@ class inspect_gui(object):
         self.panddaDir = None
         self.eventCSV = None
         self.reset_params()
+        self.merged = False
 
         self.ligand_confidence_button_labels = [
             [0, 'unassigned'],
@@ -529,6 +530,7 @@ class inspect_gui(object):
         self.r_free = None
         self.r_work = None
         self.ligand_confidence = None
+        self.merged = False
 
     def update_params(self):
         missing_files = False
@@ -651,6 +653,7 @@ class inspect_gui(object):
         coot.merge_molecules_py([self.mol_dict['ligand']], self.mol_dict['protein'])
         print('INSPECT - INFO: removing ligand from molecule list')
         coot.close_molecule(self.mol_dict['ligand'])
+        self.merged = True
 
     def reset_to_unfitted(self, widget):
         for imol in __main__.molecule_number_list():
@@ -690,6 +693,9 @@ class inspect_gui(object):
         else:
             os.system('/bin/cp {0!s} {1!s}-pandda-model.pdb'.format(new, self.xtal))
 #            os.symlink(new, '{0!s}-pandda-model.pdb'.format(self.xtal))
+        if self.merged:
+            self.elist[self.index][self.ligand_placed_index] = 'True'
+            self.save_pandda_inspect_events_csv_file()
 
     def select_events(self, widget):
         self.selected_selection_criterion = self.select_events_combobox.get_active_text()
@@ -808,6 +814,8 @@ class inspect_gui(object):
                 self.viewed_index = n
             if item == 'cluster_size':
                 self.cluster_size_index = n
+            if item == "Ligand Placed":
+                self.ligand_placed_index = n
         self.show_content_of_event_csv_file()
 
     def show_content_of_event_csv_file(self):
