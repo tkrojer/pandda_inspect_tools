@@ -733,6 +733,7 @@ class inspect_gui(object):
                 for c in self.ligand_confidence_button_labels:
                     nc = c[0]
                     co = c[1]
+                    print(nc, co)
                     if nc == n:
                         self.elist[self.index][self.ligand_confidence_index] = co
                         print("INSPECT - INFO: saving ligand confidence for event as '{0!s}'".format(co))
