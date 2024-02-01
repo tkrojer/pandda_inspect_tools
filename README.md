@@ -95,7 +95,7 @@ Note:
 
 ## Exporting PanDDA models
 
-DISCLAIMER: the export script works only for the classic pandda ver
+DISCLAIMER: the export script works only for the classic pandda version!
 
 Script for exporting models built with pandda.inspect or inspect_pandda_analyse.py into a new target directory. The script does similar things like the original pandda.export, but there are a few differences:
 
