@@ -121,6 +121,26 @@ ccp4-python export_pandda_models.py -p /home/tobias/pandda -d /home/tobias/refin
 ccp4-python export_pandda_models.py -p /home/tobias/pandda -d /home/tobias/refine -e -l -n
 ```
 
+## Combination of MTZ/CIF file from processing, refinement and event maps into a single CIF file
+
+Usage:
+
+```
+ccp4-python combine_sf.py -p <process mtz/cif> -r <optional: refine mtz/cif> -e <event mtz/cif comma separated> -o <output cif>
+
+# show all available options ("-h")
+ccp4-python combine_sf.py -h
+
+# combine processing mtz file and one event maps
+ccp4-python combine_sf.py -p process.mtz -e event_1.mtz -o combined.cif
+
+# combine processing mtz file, mtz file from refinement and one event maps
+ccp4-python combine_sf.py -p process.mtz -e event_1.mtz -o combined.cif
+
+# combine processing mtz file and multiple event maps
+ccp4-python combine_sf.py -p process.mtz -e event_1.mtz,event_2.mtz -o combined.cif
+```
+
 
 ## Prerequistes & Installation
 
