@@ -9,6 +9,7 @@ This repository contains several programs for manipulation and inspection of res
 - [export_pandda_models.py](#exporting-pandda-models)
 
 ## Event MAP to MTZ conversion
+IMPORTANT: you can skip MAP to MTZ conversion of you work with pandda 2 (i.e. the version which is part of CCP4 v8
 
 pandda.analyse creates event, average and z-maps in CCP4 map format and convert_event_map_to_mtz.py is a python script to convert the maps into MTZ files. You need to run this script if you want to explore results from pandda.analyse with inspect_pandda_analyse.py because, in contrast to pandda.inspect, it only reads maps as MTZ files and then uses the auto-read function in COOT to convert them into (difference) maps.</br>
 *Note:* the latest version of [PanDDA](https://bitbucket.org/pandda/pandda/src/master/) does write out all maps as MTZ files, so you can't/ don't need to run the script. 
