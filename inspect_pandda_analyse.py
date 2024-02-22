@@ -777,10 +777,11 @@ class inspect_gui(object):
         current_site = int(self.site)
         self.logger.info('current site {0!s}'.format(current_site))
         new_site = current_site + n
+        self.logger.info('new site: {0!s}'.format(new_site))
         index_increment = 0
         for i, item in enumerate(self.elist):
-            self.logger.info('{0!s} - {1!s}'.format(i, item))
-            if item[11] == str(new_site):
+            self.logger.info('{0!s} - {1!s}'.format(i, item[2]))
+            if item[2] == str(new_site):
                 index_increment = i - self.index
                 break
         self.change_event(index_increment)
