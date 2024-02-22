@@ -766,16 +766,20 @@ class inspect_gui(object):
         self.change_event(1)
 
     def previous_site(self, widget):
+        self.logger.info('moving to previous site')
         self.change_site(-1)
 
     def next_site(self, widget):
+        self.logger.info('moving to next site')
         self.change_site(1)
 
     def change_site(self, n):
         current_site = int(self.site)
+        self.logger.info('current site {0!s}'.format(current_site))
         new_site = current_site + n
         index_increment = 0
         for i, item in enumerate(self.elist):
+            self.logger.info('{0!s} - {1!s}'.format(i, item))
             if item[11] == str(new_site):
                 index_increment = i - self.index
                 break
