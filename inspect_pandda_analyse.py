@@ -30,11 +30,32 @@ import coot
 import __main__
 
 import csv
+import logging
+
+def init_logger(logfile):
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s | %(levelname)s - INSPECT | %(message)s', '%m-%d-%Y %H:%M:%S')
+
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    stdout_handler.setLevel(logging.DEBUG)
+    stdout_handler.setFormatter(formatter)
+    logger.addHandler(stdout_handler)
+
+    file_handler = logging.FileHandler(logfile)
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+
+    return logger
 
 
 class inspect_gui(object):
 
     def __init__(self):
+
+        self.logger = init_logger('inspect.log')
+        self.logger.info('starting new session of pandda event map inspection')
 
         self.index = -1
         self.Todo = []
@@ -257,8 +278,7 @@ class inspect_gui(object):
 
     def save_pandda_inspect_events_csv_file(self):
         with open(os.path.join(self.analysis_folder, 'pandda_inspect_events.csv'), 'w') as csvfile:
-            print('INSPECT - INFO: updating {0!s}'.format(
-                os.path.join(self.analysis_folder, 'pandda_inspect_events.csv')))
+            self.logger.info('updating {0!s}'.format(os.path.join(self.analysis_folder, 'pandda_inspect_events.csv')))
             writer = csv.writer(csvfile)
             writer.writerows(self.elist)
 
@@ -308,25 +328,25 @@ class inspect_gui(object):
         if not os.path.isfile(self.eventCSV):
             analyse_csv = self.eventCSV.replace('pandda_inspect_events.csv', 'pandda_analyse_events.csv')
             if not os.path.isfile(analyse_csv):
-                print('INSPECT - ERROR: something went wrong; cannot find {0!s}'.format(analyse_csv))
+                self.logger.error('something went wrong; cannot find {0!s}'.format(analyse_csv))
                 return
             else:
                 self.initialize_inspect_events_csv_file(analyse_csv)
 
         if not os.path.isfile(self.eventCSV):
-            print('INSPECT - ERROR: something went wrong; cannot find {0!s}'.format(self.eventCSV))
+            self.logger.error('something went wrong; cannot find {0!s}'.format(self.eventCSV))
             return
 
         if not os.path.isfile(self.siteCSV):
             analyse_csv = self.siteCSV.replace('pandda_inspect_sites.csv', 'pandda_analyse_sites.csv')
             if not os.path.isfile(analyse_csv):
-                print('INSPECT - ERROR: something went wrong; cannot find {0!s}'.format(analyse_csv))
+                self.logger.error('something went wrong; cannot find {0!s}'.format(analyse_csv))
                 return
             else:
                 self.initialize_inspect_sites_csv_file(analyse_csv)
 
         if not os.path.isfile(self.siteCSV):
-            print('INSPECT - ERROR: something went wrong; cannot find {0!s}'.format(self.siteCSV))
+            self.logger.error('something went wrong; cannot find {0!s}'.format(self.siteCSV))
             return
 
         dlg.destroy()
@@ -338,14 +358,14 @@ class inspect_gui(object):
                              '{0!s}-pandda-model.pdb'.format(self.xtal))):
             pdb = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, 'modelled_structures',
                              '{0!s}-pandda-model.pdb'.format(self.xtal))
-            print('INSPECT - INFO: found pdb file in modelled_structures folder: {0!s}'.format(pdb))
+            self.logger.info('found pdb file in modelled_structures folder: {0!s}'.format(pdb))
         elif os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                                          '{0!s}-pandda-input.pdb'.format(self.xtal))):
             pdb = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                                '{0!s}-pandda-input.pdb'.format(self.xtal))
-            print('INSPECT - INFO: found pdb file: {0!s}'.format(pdb))
+            self.logger.info('found pdb file: {0!s}'.format(pdb))
         else:
-            print('INSPECT - ERROR: did not find pdb file')
+            self.logger.error('did not find pdb file')
             missing_files = True
         return pdb, missing_files
 
@@ -364,20 +384,20 @@ class inspect_gui(object):
                 '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))):
             emap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                 '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))
-            print('INSPECT - INFO: found event map: {0!s}'.format(emap))
+            self.logger.info('found event map: {0!s}'.format(emap))
         elif os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                 '{0!s}-pandda-output-event-{1!s}.mtz'.format(self.xtal, event_number))):
             emap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                 '{0!s}-pandda-output-event-{1!s}.mtz'.format(self.xtal, event_number))
-            print('INSPECT - INFO: found event map: {0!s}'.format(emap))
+            self.logger.info('found event map: {0!s}'.format(emap))
             new_pandda_output = True
         else:
             emap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                                 '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))
-            print('INSPECT - ERROR: cannot find event map {0!s}'.format(emap))
-            print('INSPECT - REMINDER: make sure that all CCP4 maps are converted into MTZ format!')
+            self.logger.error('cannot find event map {0!s}'.format(emap))
+            self.logger.info('REMINDER: make sure that all CCP4 maps are converted into MTZ format!')
             missing_files = True
-        print('INSPECT - INFO: new pandda file names: {0!s}'.format(new_pandda_output))
+        self.logger.info('new pandda file names: {0!s}'.format(new_pandda_output))
         return emap, new_pandda_output, missing_files
 
     def load_emap(self):
@@ -407,13 +427,13 @@ class inspect_gui(object):
         if os.path.isfile(
                 os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal))):
             zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal))
-            print('INSPECT - INFO: found z-map map: {0!s}'.format(zmap))
+            self.logger.info('found z-map map: {0!s}'.format(zmap))
         elif os.path.isfile(
                 os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-pandda-output.mtz'.format(self.xtal))):
             zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-pandda-output.mtz'.format(self.xtal))
-            print('INSPECT - INFO: found z-map map: {0!s}'.format(zmap))
+            self.logger.info('found z-map map: {0!s}'.format(zmap))
         else:
-            print('INSPECT - ERROR: cannot find z-map!!!')
+            self.logger.error('cannot find z-map!!!')
             missing_files = True
         return zmap, missing_files
 
@@ -442,9 +462,9 @@ class inspect_gui(object):
                                        self.xtal, '{0!s}-pandda-input.mtz'.format(self.xtal))):
             xraymap = os.path.join(self.panddaDir, 'processed_datasets',
                                    self.xtal, '{0!s}-pandda-input.mtz'.format(self.xtal))
-            print('INSPECT - INFO: found xray map: {0!s}'.format(xraymap))
+            self.logger.info('found xray map: {0!s}'.format(xraymap))
         else:
-            print('INSPECT - ERROR: did not find xray map')
+            self.logger.error('did not find xray map')
             missing_files = True
         return xraymap, missing_files
 
@@ -462,15 +482,15 @@ class inspect_gui(object):
                                        '{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))):
             averagemap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                                       '{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))
-            print('INSPECT - INFO: found average map: {0!s}'.format(averagemap))
+            self.logger.info('found average map: {0!s}'.format(averagemap))
             self.toggle_average_map_button.set_sensitive(True)
         elif os.path.isfile(
                 os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-pandda-output.mtz'.format(self.xtal))):
             averagemap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-pandda-output.mtz'.format(self.xtal))
-            print('INSPECT - INFO: found average map: {0!s}'.format(averagemap))
+            self.logger.info('found average map: {0!s}'.format(averagemap))
             self.toggle_average_map_button.set_sensitive(True)
         else:
-            print('INSPECT - WARNING: did not find average map; disabling "average map" button')
+            self.logger.warning('did not find average map; disabling "average map" button')
             self.toggle_average_map_button.set_sensitive(False)
         return averagemap
 
@@ -496,16 +516,16 @@ class inspect_gui(object):
         if self.event:
             if os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal, self.event, 'rhofit', 'best.cif')):
                 ligcif = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, self.event, 'rhofit', 'best.cif')
-                print('INSPECT - INFO: found ligand cif file: {0!s}'.format(ligcif))
+                self.logger.info('found ligand cif file: {0!s}'.format(ligcif))
                 foundCIF = True
         if not foundCIF:
             for l in glob.glob(os.path.join(self.panddaDir, 'processed_datasets', self.xtal, 'ligand_files', '*cif')):
                 ligcif = l
-                print('INSPECT - INFO: found ligand cif file: {0!s}'.format(ligcif))
+                self.logger.info('found ligand cif file: {0!s}'.format(ligcif))
                 foundCIF = True
                 break
         if not foundCIF:
-            print('INSPECT - WARNING: did not find ligand cif file! Check if this folder contains any files: {0!s}'.format(
+            self.logger.warning('did not find ligand cif file! Check if this folder contains any files: {0!s}'.format(
                 os.path.join(self.panddaDir, 'processed_datasets', self.xtal, 'ligand_files')))
         return ligcif
 
@@ -549,7 +569,7 @@ class inspect_gui(object):
         self.event = self.elist[self.index][self.event_index]
         self.bdc = self.elist[self.index][self.bdc_index]
         self.site = self.elist[self.index][self.site_index]
-        print('INSPECT - INFO: checking if files exist for  {0!s}, event: {1!s}, site: {2!s}'.format(self.xtal, self.event,
+        self.logger.info('checking if files exist for  {0!s}, event: {1!s}, site: {2!s}'.format(self.xtal, self.event,
                                                                                           self.site))
         self.pdb, missing_files = self.get_pdb(missing_files)
         self.emap, self.new_pandda_output, missing_files = self.get_emap(missing_files)
@@ -560,7 +580,7 @@ class inspect_gui(object):
         self.x = float(self.elist[self.index][self.x_index])
         self.y = float(self.elist[self.index][self.y_index])
         self.z = float(self.elist[self.index][self.z_index])
-        print('INSPECT - INFO: event coordinates -> x = {0!s}, y = {1!s}, z = {2!s}'.format(self.x, self.y, self.z))
+        self.logger.info('event coordinates -> x = {0!s}, y = {1!s}, z = {2!s}'.format(self.x, self.y, self.z))
         self.resolution = self.elist[self.index][self.resolution_index]
         self.r_free = self.elist[self.index][self.r_free_index]
         self.r_work = self.elist[self.index][self.r_work_index]
@@ -624,14 +644,14 @@ class inspect_gui(object):
             self.index = 1
         if self.index > len(self.elist) - 1:
             self.index = len(self.elist) - 1
-            print('INSPECT - WARNING: you reached the end of available events!')
+            self.logger.warning('you reached the end of available events!')
             return None
 
         missing_files = self.update_params()
 
         # check if event fits selection criteria
         if self.current_sample_matches_selection_criteria() and not missing_files:
-            print('INSPECT - INFO: loading files for {0!s}, event: {1!s}, site: {2!s}'.format(self.xtal, self.event, self.site))
+            self.logger.info('loading files for {0!s}, event: {1!s}, site: {2!s}'.format(self.xtal, self.event, self.site))
             self.set_ligand_confidence_button()
             self.update_labels()
             self.recentre_on_event()
@@ -642,27 +662,27 @@ class inspect_gui(object):
             self.load_xraymap()
             if self.averagemap:
                 self.load_averagemap()
-            print('INSPECT - INFO: setting event map as RSR map')
+            self.logger.info('setting event map as RSR map')
             coot.set_imol_refinement_map(self.mol_dict['emap'])
 
         elif self.current_sample_matches_selection_criteria() and missing_files:
-            print('INSPECT - ERROR: essential files could not be found, check messages above; skipping...')
+            self.logger.error('essential files could not be found, check messages above; skipping...')
             self.change_event(1)
         else:
-            print('INSPECT - WARNING: {0!s}, event: {1!s}, site: {2!s} does not match selection criteria; skipping'.format(self.xtal, self.event, self.site))
+            self.logger.warning('{0!s}, event: {1!s}, site: {2!s} does not match selection criteria; skipping'.format(self.xtal, self.event, self.site))
             self.change_event(1)
 
 
     def place_ligand_here(self, widget):
-        print('INSPECT - INFO: moving ligand to pointer')
-        print('INSPECT - INFO: LIGAND: ', self.mol_dict['ligand'])
+        self.logger.info('moving ligand to pointer')
+        self.logger.info('LIGAND: ', self.mol_dict['ligand'])
         __main__.move_molecule_here(self.mol_dict['ligand'])
 
     def merge_ligand_into_protein(self, widget):
-        print('INSPECT - INFO: merge ligand into protein structure')
+        self.logger.info('merge ligand into protein structure')
         # merge_molecules(list(imols), imol) e.g. merge_molecules([1],0)
         coot.merge_molecules_py([self.mol_dict['ligand']], self.mol_dict['protein'])
-        print('INSPECT - INFO: removing ligand from molecule list')
+        self.logger.info('removing ligand from molecule list')
         coot.close_molecule(self.mol_dict['ligand'])
         self.merged = True
 
@@ -678,7 +698,7 @@ class inspect_gui(object):
     def check_if_modelled_structures_folder_exists(self):
         modelled_structures = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, 'modelled_structures')
         if not os.path.isdir(os.path.join(modelled_structures)):
-            print('INSPECT - INFO: creating folder {0!s}'.format(modelled_structures))
+            self.logger.info('creating folder {0!s}'.format(modelled_structures))
             os.mkdir(modelled_structures)
 
     def save_next(self, widget):
@@ -717,12 +737,12 @@ class inspect_gui(object):
             self.elist = sorted(self.elist, key=lambda x: x[self.cluster_size_index])
             self.elist.insert(0, header)
         elif self.selected_selection_criterion.startswith("show all events - sort alphabetically"):
-            print("INSPECT - INFO: sorting event alphabetically")
+            self.logger.info("sorting event alphabetically")
             header = self.elist[0]
             del self.elist[0]
             self.elist = sorted(self.elist, key=lambda x: x[self.xtal_index])
             self.elist.insert(0, header)
-        print("INSPECT - INFO: you selected to {0!s}".format(self.selected_selection_criterion))
+        self.logger.info("you selected to {0!s}".format(self.selected_selection_criterion))
         self.index = -1
 
     def previous_event(self, widget):
@@ -731,15 +751,15 @@ class inspect_gui(object):
     def next_event(self, widget):
         self.save_event_as_viewed()
         for n, b in enumerate(self.ligand_confidence_button_list):
-            print('===>', n, b.get_active())
+#            print('===>', n, b.get_active())
             if b.get_active():
                 for c in self.ligand_confidence_button_labels:
                     nc = c[0]
                     co = c[1]
-                    print(nc, co)
+#                    print(nc, co)
                     if nc == n:
                         self.elist[self.index][self.ligand_confidence_index] = co
-                        print("INSPECT - INFO: saving ligand confidence for event as '{0!s}'".format(co))
+                        self.logger.info("saving ligand confidence for event as '{0!s}'".format(co))
                         self.save_pandda_inspect_events_csv_file()
                         break
                 break
@@ -770,7 +790,7 @@ class inspect_gui(object):
     def make_secure_copy_of_original_csv(self, csv_file):
         csv_original = csv_file + '.original'
         if not os.path.isfile(csv_original):
-            print('INSPECT - INFO: creating backup file of {0!s}'.format(csv_file))
+            self.logger.info('creating backup file of {0!s}'.format(csv_file))
             shutil.copy(csv_file, csv_original)
 
 
@@ -802,15 +822,15 @@ class inspect_gui(object):
             writer.writerows(l)
 
     def parsepanddaDir(self):
-        print("INSPECT - INFO: reading {0!s}".format(self.eventCSV))
+        self.logger.info("reading {0!s}".format(self.eventCSV))
         r = csv.reader(open(self.eventCSV))
         self.elist = list(r)
 
-        print("INSPECT - INFO: reading {0!s}".format(self.siteCSV))
+        self.logger.info("reading {0!s}".format(self.siteCSV))
         r = csv.reader(open(self.siteCSV))
         self.slist = list(r)
 
-        print("INSPECT - INFO: getting header fields from {0!s}".format(self.eventCSV))
+        self.logger.info("getting header fields from {0!s}".format(self.eventCSV))
         for n, item in enumerate(self.elist[0]): # number of columns at the end can differ
             if item == 'dtag':
                 self.xtal_index = n
@@ -843,7 +863,7 @@ class inspect_gui(object):
         self.show_content_of_event_csv_file()
 
     def show_content_of_event_csv_file(self):
-        print("INSPECT - INFO: showing contents of {0!s}:".format(self.eventCSV))
+        self.logger.info("showing contents of {0!s}:".format(self.eventCSV))
         for n,i in enumerate(self.elist):
             if n == 0:
                 continue
@@ -861,7 +881,7 @@ class inspect_gui(object):
                 ' - viewed: {0!s}'.format(self.elist[n][self.viewed_index]) +
                 ' - ligand confidence: {0!s}'.format(self.elist[n][self.ligand_confidence_index])
             )
-            print(info)
+#            print(info)
 
     def toggle_emap(self, widget):
         if self.mol_dict['emap'] is not None:
