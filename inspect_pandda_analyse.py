@@ -218,7 +218,7 @@ class inspect_gui(object):
 
         self.vbox_sample_navigator = gtk.VBox()
         self.cb = gtk.combo_box_new_text()
-#        self.cb.connect("changed", self.ChooseXtal)
+        self.cb.connect("changed", self.select_crystal)
         vbox.add(self.cb)
 
 
@@ -632,6 +632,24 @@ class inspect_gui(object):
             if i == text:
                 self.cb.set_active(n)
                 break
+
+    def select_crystal(self, widget):
+        tmp = str(widget.get_active_text())
+        self.logger.info('new selection: {0!s}'.format(tmp))
+        tmpx = tmp.replace(' - event: ', '').replace(' - site: ', '')
+        xtal = tmpx.split()[0]
+        event = tmpx.split()[1]
+        site = tmpx.split()[2]
+        index_increment = 0
+        for n, i in enumerate(self.elist):
+            x = self.elist[n][self.xtal_index]
+            e = self.elist[n][self.event_index]
+            s = self.elist[n][self.site_index]
+            if x == xtal and e == event and s == site:
+                index_increment = n - self.index
+                break
+        self.change_event(index_increment)
+
 #
 #            print('>>>>', self.cb.get_model()[n])
 #            print(i)
