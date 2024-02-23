@@ -59,6 +59,7 @@ class inspect_gui(object):
 
         self.index = -1
         self.Todo = []
+        self.cb_list = []
         self.mol_dict = {
             'protein': None,
             'emap': None,
@@ -625,11 +626,16 @@ class inspect_gui(object):
         return show_event
 
     def update_crystal_selection_combobox(self):
-        print(dir(self.cb))
-        for n, i in enumerate(self.elist):
-            print('>>>>', self.cb.get_model()[n])
-            print(i)
-        print('fehfeiufigerygf', self.cb.get_model())
+        self.logger.info('updating crystal selection combobox')
+        text = '{0!s} - event: {1!s} - site: {2!s}'.format(self.xtal, self.event, self.site)
+        for n, i in enumerate(self.cb_list):
+            if i == text:
+                self.cb.set_active(n)
+                break
+#
+#            print('>>>>', self.cb.get_model()[n])
+#            print(i)
+#        print('fehfeiufigerygf', self.cb.get_model())
 
 #        for n,i in sorted(enumerate(self.elist)):
 #            if n == 0:
@@ -916,12 +922,15 @@ class inspect_gui(object):
             for n, item in enumerate(self.elist):
                 self.cb.remove_text(0)
         self.logger.info('adding new entries from crystal selection combobox')
+        self.cb_list = []
         for n,i in sorted(enumerate(self.elist)):
             if n == 0:
                 continue
-            self.cb.append_text('{0!s} - event: {1!s} - site: {2!s}'.format(self.elist[n][self.xtal_index],
+            text = '{0!s} - event: {1!s} - site: {2!s}'.format(self.elist[n][self.xtal_index],
                                                                             self.elist[n][self.event_index],
-                                                                            self.elist[n][self.site_index]))
+                                                                            self.elist[n][self.site_index])
+            self.cb_list.append(text)
+            self.cb.append_text(text)
 
 
 
