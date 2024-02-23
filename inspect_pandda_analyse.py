@@ -218,6 +218,8 @@ class inspect_gui(object):
 
         self.vbox_sample_navigator = gtk.VBox()
         self.cb = gtk.combo_box_new_text()
+        print(dir(self.cb))
+        sys.exit()
         self.cb.connect("changed", self.select_crystal)
         vbox.add(self.cb)
 
