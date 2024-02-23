@@ -417,10 +417,10 @@ class inspect_gui(object):
             # loads double-maps
 #            imol = coot.auto_read_make_and_draw_maps(self.emap)
             # testing this command
-#            imol = coot.make_and_draw_map(self.emap, "FWT", "PHWT", "1", 0, 0)
+            imol = coot.make_and_draw_map(self.emap, "FWT", "PHWT", "1", 0, 0)
 #            self.mol_dict['emap'] = imol[0]
             # may cause core dump
-            imol = coot.map_from_mtz_by_calc_phases(self.emap, "FWT", "PHWT", self.mol_dict['protein'])
+#            imol = coot.map_from_mtz_by_calc_phases(self.emap, "FWT", "PHWT", self.mol_dict['protein'])
             self.mol_dict['emap'] = imol
         coot.set_colour_map_rotation_on_read_pdb(0)
         coot.set_last_map_colour(0, 0, 1)
