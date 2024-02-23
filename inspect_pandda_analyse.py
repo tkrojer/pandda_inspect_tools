@@ -627,45 +627,6 @@ class inspect_gui(object):
                 show_event = True
         return show_event
 
-    def update_crystal_selection_combobox(self):
-        self.logger.info('updating crystal selection combobox')
-        text = '{0!s} - event: {1!s} - site: {2!s}'.format(self.xtal, self.event, self.site)
-        for n, i in enumerate(self.cb_list):
-            if i == text:
-                self.cb.set_active(n)
-                break
-
-    def select_crystal(self, widget):
-        tmp = str(widget.get_active_text())
-        self.logger.info('new selection: {0!s}'.format(tmp))
-        tmpx = tmp.replace(' - event: ', ' ').replace(' - site: ', ' ')
-        xtal = tmpx.split()[0]
-        event = tmpx.split()[1]
-        site = tmpx.split()[2]
-        index_increment = 0
-        for n, i in enumerate(self.elist):
-            x = self.elist[n][self.xtal_index]
-            e = self.elist[n][self.event_index]
-            s = self.elist[n][self.site_index]
-            if x == xtal and e == event and s == site:
-                index_increment = n - self.index
-                break
-        self.change_event(index_increment)
-
-#
-#            print('>>>>', self.cb.get_model()[n])
-#            print(i)
-#        print('fehfeiufigerygf', self.cb.get_model())
-
-#        for n,i in sorted(enumerate(self.elist)):
-#            if n == 0:
-#                continue
-#            self.cb.append_text('{0!s} - event: {1!s} - site: {2!s}'.format(self.elist[n][self.xtal_index],
-#                                                                            self.elist[n][self.event_index],
-#                                                                            self.elist[n][self.site_index]))
-#        self.cb.set_active(self.index)
-
-
     def RefreshData(self):
 
         self.reset_params()
@@ -838,7 +799,36 @@ class inspect_gui(object):
     def change_event(self, n):
         self.index += n
         self.crystal_progressbar.set_fraction(float(self.index) / float(len(self.elist)))
+        self.update_crystal_selection_combobox()
         self.RefreshData()
+
+    def update_crystal_selection_combobox(self):
+        self.logger.info('updating crystal selection combobox')
+        x = self.elist[self.index][self.xtal_index]
+        e = self.elist[self.index][self.event_index]
+        s = self.elist[self.index][self.site_index]
+        text = '{0!s} - event: {1!s} - site: {2!s}'.format(x, e, s)
+        for n, i in enumerate(self.cb_list):
+            if i == text:
+                self.cb.set_active(n)
+                break
+
+    def select_crystal(self, widget):
+        tmp = str(widget.get_active_text())
+        self.logger.info('new selection: {0!s}'.format(tmp))
+        tmpx = tmp.replace(' - event: ', ' ').replace(' - site: ', ' ')
+        xtal = tmpx.split()[0]
+        event = tmpx.split()[1]
+        site = tmpx.split()[2]
+        index_increment = 0
+        for n, i in enumerate(self.elist):
+            x = self.elist[n][self.xtal_index]
+            e = self.elist[n][self.event_index]
+            s = self.elist[n][self.site_index]
+            if x == xtal and e == event and s == site:
+                index_increment = n - self.index
+                break
+        self.change_event(index_increment)
 
     def make_secure_copy_of_original_csv(self, csv_file):
         csv_original = csv_file + '.original'
