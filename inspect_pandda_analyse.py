@@ -214,6 +214,13 @@ class inspect_gui(object):
         next_site_button.connect("clicked", self.next_site)
         hbox.pack_start(next_site_button)
         vbox.add(hbox)
+
+        self.vbox_sample_navigator = gtk.VBox()
+        self.cb = gtk.combo_box_new_text()
+#        self.cb.connect("changed", self.ChooseXtal)
+        vbox.add(hbox)
+
+
         self.crystal_progressbar = gtk.ProgressBar()
         vbox.add(self.crystal_progressbar)
         frame.add(vbox)
@@ -876,7 +883,6 @@ class inspect_gui(object):
             y = round(float(self.elist[n][self.y_index]), 1)
             z = round(float(self.elist[n][self.z_index]), 1)
             info = (
-                'INSPECT - INFO: '
                 ' xtal: {0!s}'.format(self.elist[n][self.xtal_index]) +
                 ' - event/site: {0!s}/{1!s}'.format(self.elist[n][self.event_index],self.elist[n][self.site_index]) +
                 ' - BDC: {0!s}'.format(self.elist[n][self.bdc_index]) +
@@ -886,7 +892,22 @@ class inspect_gui(object):
                 ' - viewed: {0!s}'.format(self.elist[n][self.viewed_index]) +
                 ' - ligand confidence: {0!s}'.format(self.elist[n][self.ligand_confidence_index])
             )
-#            print(info)
+            self.logger.info(info)
+
+    def update_crystal_selection_combobox(self):
+        self.logger.info('removing all entries from crystal selection combobox')
+        if len(self.elist) != 0:
+            for n, item in enumerate(self.elist):
+                self.cb.remove_text(0)
+        self.logger.info('adding new entries from crystal selection combobox')
+        for n,i in sorted(enumerate(self.elist)):
+            if n == 0:
+                continue
+            self.cb.append_text('{0!s} - event: {1!s} - site: {2!s}'.format(self.elist[n][self.xtal_index],
+                                                                            self.elist[n][self.event_index],
+                                                                            self.elist[n][self.site_index]))
+
+
 
     def toggle_emap(self, widget):
         if self.mol_dict['emap'] is not None:
