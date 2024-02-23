@@ -626,6 +626,8 @@ class inspect_gui(object):
 
     def update_crystal_selection_combobox(self):
         print(dir(self.cb))
+        for i in self.cb:
+            print(i)
 
 #        for n,i in sorted(enumerate(self.elist)):
 #            if n == 0:
