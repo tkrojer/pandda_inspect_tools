@@ -218,7 +218,7 @@ class inspect_gui(object):
         self.vbox_sample_navigator = gtk.VBox()
         self.cb = gtk.combo_box_new_text()
 #        self.cb.connect("changed", self.ChooseXtal)
-        vbox.add(hbox)
+        vbox.add(self.cb)
 
 
         self.crystal_progressbar = gtk.ProgressBar()
