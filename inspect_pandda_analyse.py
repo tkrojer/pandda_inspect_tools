@@ -746,12 +746,14 @@ class inspect_gui(object):
             del self.elist[0]
             self.elist = sorted(self.elist, key=lambda x: x[self.cluster_size_index])
             self.elist.insert(0, header)
+            self.init_crystal_selection_combobox()
         elif self.selected_selection_criterion.startswith("show all events - sort alphabetically"):
             self.logger.info("sorting event alphabetically")
             header = self.elist[0]
             del self.elist[0]
             self.elist = sorted(self.elist, key=lambda x: x[self.xtal_index])
             self.elist.insert(0, header)
+            self.init_crystal_selection_combobox()
         self.logger.info("you selected to {0!s}".format(self.selected_selection_criterion))
         self.index = -1
 
