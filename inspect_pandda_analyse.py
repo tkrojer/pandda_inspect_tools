@@ -624,6 +624,17 @@ class inspect_gui(object):
                 show_event = True
         return show_event
 
+    def update_crystal_selection_combobox(self):
+        print(dir(self.cb))
+
+#        for n,i in sorted(enumerate(self.elist)):
+#            if n == 0:
+#                continue
+#            self.cb.append_text('{0!s} - event: {1!s} - site: {2!s}'.format(self.elist[n][self.xtal_index],
+#                                                                            self.elist[n][self.event_index],
+#                                                                            self.elist[n][self.site_index]))
+#        self.cb.set_active(self.index)
+
 
     def RefreshData(self):
 
@@ -655,6 +666,7 @@ class inspect_gui(object):
             return None
 
         missing_files = self.update_params()
+        self.update_crystal_selection_combobox()
 
         # check if event fits selection criteria
         if self.current_sample_matches_selection_criteria() and not missing_files:
@@ -798,7 +810,6 @@ class inspect_gui(object):
         self.crystal_progressbar.set_fraction(float(self.index) / float(len(self.elist)))
         self.RefreshData()
 
-
     def make_secure_copy_of_original_csv(self, csv_file):
         csv_original = csv_file + '.original'
         if not os.path.isfile(csv_original):
@@ -893,9 +904,9 @@ class inspect_gui(object):
                 ' - ligand confidence: {0!s}'.format(self.elist[n][self.ligand_confidence_index])
             )
             self.logger.info(info)
-        self.update_crystal_selection_combobox()
+        self.init_crystal_selection_combobox()
 
-    def update_crystal_selection_combobox(self):
+    def init_crystal_selection_combobox(self):
         self.logger.info('removing all entries from crystal selection combobox')
         if len(self.elist) != 0:
             for n, item in enumerate(self.elist):
