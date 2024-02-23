@@ -418,10 +418,10 @@ class inspect_gui(object):
 #            imol = coot.auto_read_make_and_draw_maps(self.emap)
             # testing this command
             imol = coot.make_and_draw_map(self.emap, "FWT", "PHWT", "1", 0, 0)
-#            self.mol_dict['emap'] = imol[0]
+            self.mol_dict['emap'] = imol[0]
             # may cause core dump
 #            imol = coot.map_from_mtz_by_calc_phases(self.emap, "FWT", "PHWT", self.mol_dict['protein'])
-            self.mol_dict['emap'] = imol
+#            self.mol_dict['emap'] = imol
         coot.set_colour_map_rotation_on_read_pdb(0)
         coot.set_last_map_colour(0, 0, 1)
         self.show_emap = 1
@@ -511,11 +511,11 @@ class inspect_gui(object):
             self.mol_dict['averagemap'] = imol
         else:
             # loads double-maps
-#            imol = coot.auto_read_make_and_draw_maps(self.averagemap)
-#            self.mol_dict['averagemap'] = imol[0]
+            imol = coot.auto_read_make_and_draw_maps(self.averagemap)
+            self.mol_dict['averagemap'] = imol[0]
             # may case core-dump
-            imol = coot.map_from_mtz_by_calc_phases(self.zmap, "FWT", "PHWT", self.mol_dict['protein'])
-            self.mol_dict['averagemap'] = imol
+#            imol = coot.map_from_mtz_by_calc_phases(self.zmap, "FWT", "PHWT", self.mol_dict['protein'])
+#            self.mol_dict['averagemap'] = imol
         coot.set_colour_map_rotation_on_read_pdb(0)
         __main__.toggle_display_map(self.mol_dict['averagemap'], self.show_averagemap)
         coot.set_last_map_colour(0, 0, 1)
