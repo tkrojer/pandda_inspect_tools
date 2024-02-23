@@ -59,6 +59,7 @@ class inspect_gui(object):
 
         self.index = -1
         self.Todo = []
+        self.cb_list = []
         self.mol_dict = {
             'protein': None,
             'emap': None,
@@ -217,7 +218,7 @@ class inspect_gui(object):
 
         self.vbox_sample_navigator = gtk.VBox()
         self.cb = gtk.combo_box_new_text()
-#        self.cb.connect("changed", self.ChooseXtal)
+        self.cb.connect("changed", self.select_crystal)
         vbox.add(self.cb)
 
 
@@ -624,6 +625,44 @@ class inspect_gui(object):
                 show_event = True
         return show_event
 
+    def update_crystal_selection_combobox(self):
+        self.logger.info('updating crystal selection combobox')
+        text = '{0!s} - event: {1!s} - site: {2!s}'.format(self.xtal, self.event, self.site)
+        for n, i in enumerate(self.cb_list):
+            if i == text:
+                self.cb.set_active(n)
+                break
+
+    def select_crystal(self, widget):
+        tmp = str(widget.get_active_text())
+        self.logger.info('new selection: {0!s}'.format(tmp))
+        tmpx = tmp.replace(' - event: ', ' ').replace(' - site: ', ' ')
+        xtal = tmpx.split()[0]
+        event = tmpx.split()[1]
+        site = tmpx.split()[2]
+        index_increment = 0
+        for n, i in enumerate(self.elist):
+            x = self.elist[n][self.xtal_index]
+            e = self.elist[n][self.event_index]
+            s = self.elist[n][self.site_index]
+            if x == xtal and e == event and s == site:
+                index_increment = n - self.index
+                break
+        self.change_event(index_increment)
+
+#
+#            print('>>>>', self.cb.get_model()[n])
+#            print(i)
+#        print('fehfeiufigerygf', self.cb.get_model())
+
+#        for n,i in sorted(enumerate(self.elist)):
+#            if n == 0:
+#                continue
+#            self.cb.append_text('{0!s} - event: {1!s} - site: {2!s}'.format(self.elist[n][self.xtal_index],
+#                                                                            self.elist[n][self.event_index],
+#                                                                            self.elist[n][self.site_index]))
+#        self.cb.set_active(self.index)
+
 
     def RefreshData(self):
 
@@ -655,6 +694,7 @@ class inspect_gui(object):
             return None
 
         missing_files = self.update_params()
+        self.update_crystal_selection_combobox()
 
         # check if event fits selection criteria
         if self.current_sample_matches_selection_criteria() and not missing_files:
@@ -798,7 +838,6 @@ class inspect_gui(object):
         self.crystal_progressbar.set_fraction(float(self.index) / float(len(self.elist)))
         self.RefreshData()
 
-
     def make_secure_copy_of_original_csv(self, csv_file):
         csv_original = csv_file + '.original'
         if not os.path.isfile(csv_original):
@@ -893,20 +932,23 @@ class inspect_gui(object):
                 ' - ligand confidence: {0!s}'.format(self.elist[n][self.ligand_confidence_index])
             )
             self.logger.info(info)
-        self.update_crystal_selection_combobox()
+        self.init_crystal_selection_combobox()
 
-    def update_crystal_selection_combobox(self):
+    def init_crystal_selection_combobox(self):
         self.logger.info('removing all entries from crystal selection combobox')
         if len(self.elist) != 0:
             for n, item in enumerate(self.elist):
                 self.cb.remove_text(0)
         self.logger.info('adding new entries from crystal selection combobox')
+        self.cb_list = []
         for n,i in sorted(enumerate(self.elist)):
             if n == 0:
                 continue
-            self.cb.append_text('{0!s} - event: {1!s} - site: {2!s}'.format(self.elist[n][self.xtal_index],
+            text = '{0!s} - event: {1!s} - site: {2!s}'.format(self.elist[n][self.xtal_index],
                                                                             self.elist[n][self.event_index],
-                                                                            self.elist[n][self.site_index]))
+                                                                            self.elist[n][self.site_index])
+            self.cb_list.append(text)
+            self.cb.append_text(text)
 
 
 
