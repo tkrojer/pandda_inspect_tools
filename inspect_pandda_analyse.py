@@ -628,7 +628,7 @@ class inspect_gui(object):
         print(dir(self.cb))
         for i in self.cb:
             print(i)
-        print('fehfeiufigerygf', self.cb.get_data())
+        print('fehfeiufigerygf', self.cb.get_model())
 
 #        for n,i in sorted(enumerate(self.elist)):
 #            if n == 0:
