@@ -457,7 +457,7 @@ class inspect_gui(object):
         else:
             # load double-maps
             imol = coot.auto_read_make_and_draw_maps(self.zmap)
-            self.mol_dict['zmap'] = imol
+            self.mol_dict['zmap'] = imol[0]
             coot.set_contour_level_in_sigma(self.mol_dict['zmap'], 3)
             # may cause core dump
 #            imol = coot.map_from_mtz_by_calc_phases(self.zmap, "DELWT", "PHDELWT", self.mol_dict['protein'])
