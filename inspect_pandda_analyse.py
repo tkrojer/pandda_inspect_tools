@@ -415,10 +415,10 @@ class inspect_gui(object):
             self.mol_dict['emap'] = imol
         else:
             # loads double-maps
-            imol = coot.auto_read_make_and_draw_maps(self.emap)
-#            # testing this command
-#            imol = coot.make_and_draw_map(self.emap, "FWT", "PHWT", "1", 0, 0)
-            self.mol_dict['emap'] = imol[0]
+#            imol = coot.auto_read_make_and_draw_maps(self.emap)
+            # testing this command
+            imol = coot.make_and_draw_map(self.emap, "FWT", "PHWT", "1", 0, 0)
+            self.mol_dict['emap'] = imol
             # may cause core dump
 #            imol = coot.map_from_mtz_by_calc_phases(self.emap, "FWT", "PHWT", self.mol_dict['protein'])
 #            self.mol_dict['emap'] = imol
@@ -627,45 +627,6 @@ class inspect_gui(object):
                 show_event = True
         return show_event
 
-    def update_crystal_selection_combobox(self):
-        self.logger.info('updating crystal selection combobox')
-        text = '{0!s} - event: {1!s} - site: {2!s}'.format(self.xtal, self.event, self.site)
-        for n, i in enumerate(self.cb_list):
-            if i == text:
-                self.cb.set_active(n)
-                break
-
-    def select_crystal(self, widget):
-        tmp = str(widget.get_active_text())
-        self.logger.info('new selection: {0!s}'.format(tmp))
-        tmpx = tmp.replace(' - event: ', ' ').replace(' - site: ', ' ')
-        xtal = tmpx.split()[0]
-        event = tmpx.split()[1]
-        site = tmpx.split()[2]
-        index_increment = 0
-        for n, i in enumerate(self.elist):
-            x = self.elist[n][self.xtal_index]
-            e = self.elist[n][self.event_index]
-            s = self.elist[n][self.site_index]
-            if x == xtal and e == event and s == site:
-                index_increment = n - self.index
-                break
-        self.change_event(index_increment)
-
-#
-#            print('>>>>', self.cb.get_model()[n])
-#            print(i)
-#        print('fehfeiufigerygf', self.cb.get_model())
-
-#        for n,i in sorted(enumerate(self.elist)):
-#            if n == 0:
-#                continue
-#            self.cb.append_text('{0!s} - event: {1!s} - site: {2!s}'.format(self.elist[n][self.xtal_index],
-#                                                                            self.elist[n][self.event_index],
-#                                                                            self.elist[n][self.site_index]))
-#        self.cb.set_active(self.index)
-
-
     def RefreshData(self):
 
         self.reset_params()
@@ -696,7 +657,6 @@ class inspect_gui(object):
             return None
 
         missing_files = self.update_params()
-        self.update_crystal_selection_combobox()
 
         # check if event fits selection criteria
         if self.current_sample_matches_selection_criteria() and not missing_files:
@@ -785,12 +745,14 @@ class inspect_gui(object):
             del self.elist[0]
             self.elist = sorted(self.elist, key=lambda x: x[self.cluster_size_index])
             self.elist.insert(0, header)
+            self.init_crystal_selection_combobox()
         elif self.selected_selection_criterion.startswith("show all events - sort alphabetically"):
             self.logger.info("sorting event alphabetically")
             header = self.elist[0]
             del self.elist[0]
             self.elist = sorted(self.elist, key=lambda x: x[self.xtal_index])
             self.elist.insert(0, header)
+            self.init_crystal_selection_combobox()
         self.logger.info("you selected to {0!s}".format(self.selected_selection_criterion))
         self.index = -1
 
@@ -838,7 +800,36 @@ class inspect_gui(object):
     def change_event(self, n):
         self.index += n
         self.crystal_progressbar.set_fraction(float(self.index) / float(len(self.elist)))
+        self.update_crystal_selection_combobox()
         self.RefreshData()
+
+    def update_crystal_selection_combobox(self):
+        self.logger.info('updating crystal selection combobox')
+        x = self.elist[self.index][self.xtal_index]
+        e = self.elist[self.index][self.event_index]
+        s = self.elist[self.index][self.site_index]
+        text = '{0!s} - event: {1!s} - site: {2!s}'.format(x, e, s)
+        for n, i in enumerate(self.cb_list):
+            if i == text:
+                self.cb.set_active(n)
+                break
+
+    def select_crystal(self, widget):
+        tmp = str(widget.get_active_text())
+        self.logger.info('new selection: {0!s}'.format(tmp))
+        tmpx = tmp.replace(' - event: ', ' ').replace(' - site: ', ' ')
+        xtal = tmpx.split()[0]
+        event = tmpx.split()[1]
+        site = tmpx.split()[2]
+        index_increment = 0
+        for n, i in enumerate(self.elist):
+            x = self.elist[n][self.xtal_index]
+            e = self.elist[n][self.event_index]
+            s = self.elist[n][self.site_index]
+            if x == xtal and e == event and s == site:
+                index_increment = n - self.index
+                break
+        self.change_event(index_increment)
 
     def make_secure_copy_of_original_csv(self, csv_file):
         csv_original = csv_file + '.original'
