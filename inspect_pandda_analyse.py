@@ -657,7 +657,7 @@ class inspect_gui(object):
             return None
 
         missing_files = self.update_params()
-        self.update_crystal_selection_combobox()
+#        self.update_crystal_selection_combobox()
 
         # check if event fits selection criteria
         if self.current_sample_matches_selection_criteria() and not missing_files:
