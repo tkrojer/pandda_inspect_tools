@@ -636,7 +636,7 @@ class inspect_gui(object):
     def select_crystal(self, widget):
         tmp = str(widget.get_active_text())
         self.logger.info('new selection: {0!s}'.format(tmp))
-        tmpx = tmp.replace(' - event: ', '').replace(' - site: ', '')
+        tmpx = tmp.replace(' - event: ', ' ').replace(' - site: ', ' ')
         xtal = tmpx.split()[0]
         event = tmpx.split()[1]
         site = tmpx.split()[2]
