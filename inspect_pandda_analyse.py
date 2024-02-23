@@ -456,13 +456,13 @@ class inspect_gui(object):
             coot.set_map_is_difference_map(imol, True)
         else:
             # load double-maps
-#            imol = coot.auto_read_make_and_draw_maps(self.zmap)
-#            self.mol_dict['zmap'] = imol[0]
-#            coot.set_contour_level_in_sigma(self.mol_dict['zmap'], 3)
+            imol = coot.auto_read_make_and_draw_maps(self.zmap)
+            self.mol_dict['zmap'] = imol[0]
+            coot.set_contour_level_in_sigma(self.mol_dict['zmap'], 3)
             # may cause core dump
-            imol = coot.map_from_mtz_by_calc_phases(self.zmap, "DELWT", "PHDELWT", self.mol_dict['protein'])
-            self.mol_dict['zmap'] = imol
-            coot.set_map_is_difference_map(imol, True)
+#            imol = coot.map_from_mtz_by_calc_phases(self.zmap, "DELWT", "PHDELWT", self.mol_dict['protein'])
+#            self.mol_dict['zmap'] = imol
+#            coot.set_map_is_difference_map(imol, True)
 #        coot.set_contour_level_in_sigma(imol[0], 3)
         self.show_zmap = 1
 
