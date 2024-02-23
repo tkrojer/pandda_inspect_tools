@@ -893,6 +893,7 @@ class inspect_gui(object):
                 ' - ligand confidence: {0!s}'.format(self.elist[n][self.ligand_confidence_index])
             )
             self.logger.info(info)
+        self.update_crystal_selection_combobox()
 
     def update_crystal_selection_combobox(self):
         self.logger.info('removing all entries from crystal selection combobox')
