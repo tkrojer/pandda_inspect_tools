@@ -394,6 +394,11 @@ class inspect_gui(object):
                 '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.mtz'.format(self.xtal, self.event, self.bdc))
             self.logger.info('found event map: {0!s}'.format(emap))
         elif os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
+                '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.ccp4'.format(self.xtal, self.event, self.bdc))):
+            emap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
+                '{0!s}-event_{1!s}_1-BDC_{2!s}_map.native.ccp4'.format(self.xtal, self.event, self.bdc))
+            self.logger.info('found event map: {0!s}'.format(emap))
+        elif os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                 '{0!s}-pandda-output-event-{1!s}.mtz'.format(self.xtal, event_number))):
             emap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
                 '{0!s}-pandda-output-event-{1!s}.mtz'.format(self.xtal, event_number))
@@ -412,6 +417,9 @@ class inspect_gui(object):
         if self.new_pandda_output:
 #            imol = coot.map_from_mtz_by_calc_phases(self.emap, "FEVENT", "PHEVENT", self.mol_dict['protein'])
             imol = coot.make_and_draw_map(self.emap, "FEVENT", "PHEVENT", "1", 0, 0)
+            self.mol_dict['emap'] = imol
+        elif self.emap.endswith(".ccp4"):
+            imol = coot.read_ccp4_map(self.emap, 0)
             self.mol_dict['emap'] = imol
         else:
             # loads double-maps
@@ -439,6 +447,10 @@ class inspect_gui(object):
             zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.mtz'.format(self.xtal))
             self.logger.info('found z-map map: {0!s}'.format(zmap))
         elif os.path.isfile(
+                os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.ccp4'.format(self.xtal))):
+            zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-z_map.native.ccp4'.format(self.xtal))
+            self.logger.info('found z-map map: {0!s}'.format(zmap))
+        elif os.path.isfile(
                 os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-pandda-output.mtz'.format(self.xtal))):
             zmap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-pandda-output.mtz'.format(self.xtal))
             self.logger.info('found z-map map: {0!s}'.format(zmap))
@@ -454,6 +466,9 @@ class inspect_gui(object):
             imol = coot.make_and_draw_map(self.zmap, "FZVALUES", "PHZVALUES", "1", 0, 1)
             self.mol_dict['zmap'] = imol
             coot.set_map_is_difference_map(imol, True)
+        elif self.zmap.endswith(".ccp4"):
+            imol = coot.read_ccp4_map(self.zmap, 1)
+            self.mol_dict['zmap'] = imol
         else:
             # load double-maps
             imol = coot.auto_read_make_and_draw_maps(self.zmap)
@@ -494,6 +509,13 @@ class inspect_gui(object):
                                       '{0!s}-ground-state-average-map.native.mtz'.format(self.xtal))
             self.logger.info('found average map: {0!s}'.format(averagemap))
             self.toggle_average_map_button.set_sensitive(True)
+
+        elif os.path.isfile(os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
+                                       '{0!s}-ground-state-average-map.native.ccp4'.format(self.xtal))):
+            averagemap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal,
+                                      '{0!s}-ground-state-average-map.native.ccp4'.format(self.xtal))
+            self.logger.info('found average map: {0!s}'.format(averagemap))
+            self.toggle_average_map_button.set_sensitive(True)
         elif os.path.isfile(
                 os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-pandda-output.mtz'.format(self.xtal))):
             averagemap = os.path.join(self.panddaDir, 'processed_datasets', self.xtal, '{0!s}-pandda-output.mtz'.format(self.xtal))
@@ -508,6 +530,9 @@ class inspect_gui(object):
         if self.new_pandda_output:
 #            imol = coot.map_from_mtz_by_calc_phases(self.zmap, "FGROUND", "PHGROUND", self.mol_dict['protein'])
             imol = coot.make_and_draw_map(self.zmap, "FGROUND", "PHGROUND", "1", 0, 0)
+            self.mol_dict['averagemap'] = imol
+        elif self.averagemap.endswith(".ccp4"):
+            imol = coot.read_ccp4_map(self.averagemap, 0)
             self.mol_dict['averagemap'] = imol
         else:
             # loads double-maps
